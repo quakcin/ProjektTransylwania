@@ -89,6 +89,8 @@ class ServerBackgroundWorker
 						otherPlayer.setAng(otherPlayer.getAng() + 15 * (3.1415 / 180));
 					}
 					while (!otherPlayer.Push(90, game));
+					otherPlayer.setForcingSynchronization(true);
+					player.setForcingSynchronization(true);
 				}
 
 			}
