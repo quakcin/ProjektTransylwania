@@ -259,7 +259,7 @@ class Game implements Serializable
 		double nDist = 0xFFFF;
 		for (Lamp lamp : lamps)
 		{
-			double dist = player.getDist(lamp.getX(), lamp.getY());
+			double dist = player.getDist(lamp.getX() - 20, lamp.getY() - 20);
 			if (dist < nDist)
 			{
 				nDist = dist;
