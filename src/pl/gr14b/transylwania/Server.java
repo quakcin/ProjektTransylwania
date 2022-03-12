@@ -81,7 +81,7 @@ public class Server
 						else
 						{
 							// even if tp'ed allow if not too far
-							if (serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 110)
+							if (serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 100)
 								serverGame.getPlayer().copyLocation(clientPlayer);
 							else
 							{
