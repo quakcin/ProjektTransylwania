@@ -78,6 +78,12 @@ public class Server
 							serverGame.getPlayer().copyLocation(clientPlayer);
 							serverGame.getPlayer().copyFlags(clientPlayer);
 						}
+						else
+						{
+							// even if tp'ed allow if not too far
+							if (serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 110)
+								serverGame.getPlayer().copyLocation(clientPlayer);
+						}
 					}
 					else if (clientResponse instanceof Hello)
 					{
@@ -92,24 +98,25 @@ public class Server
 						playerID = serverGame.playerJoinEvent(helloPacket.getNickName(), serverGame.getPlayers());
 						serverGame.setPlayerID(playerID);
 						playerNickname = helloPacket.getNickName();
+						System.out.printf("Player %s has joined!\n", playerID);
 					}
 
 					// Send Back: serverGame object
-
-					if (serverGame.getPlayerByUUID(playerID).getNextPacket() == 0 || serverGame.getPlayerByUUID(playerID).isForcingSynchronization())
+					// This should never be the case!
+					if (serverGame.getPlayer().getNextPacket() == 0 || serverGame.getPlayer().isForcingSynchronization())
 					{
 						serverGame.getPlayer().setForcingSynchronization(false);
-						objOut.writeObject(serverGame);
+						objOut.writeObject(serverGame); // FIXME: Split synchronization to smaller packets
 					}
-					else if (serverGame.getPlayerByUUID(playerID).getNextPacket() <= 10)
+					else if (serverGame.getPlayer().getNextPacket() <= 10)
 					{
 						objOut.writeObject(new PlayersListPacket(serverGame.getPlayers()));
 					}
-					else if (serverGame.getPlayerByUUID(playerID).getNextPacket() == 11)
+					else if (serverGame.getPlayer().getNextPacket() == 11)
 					{
 						objOut.writeObject(new PropsAndStatsListPacket(serverGame.getProps(), serverGame.getGameStatus(), serverGame.getWaitingTime(), serverGame.getGameTime()));
 					}
-					else if (serverGame.getPlayerByUUID(playerID).getNextPacket() == 12)
+					else if (serverGame.getPlayer().getNextPacket() == 12)
 					{
 						objOut.writeObject(new LampsListPacket(serverGame.getLamps()));
 					}

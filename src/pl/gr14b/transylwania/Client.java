@@ -366,7 +366,7 @@ public class Client extends JFrame implements KeyListener
 			{
 				try
 				{
-					socket = new Socket("127.0.0.1", Server.PORT);
+					socket = new Socket("26.246.128.93", Server.PORT);
 					socket.setTcpNoDelay(true);
 					objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 					objectInputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
