@@ -16,7 +16,8 @@ public class Player implements Serializable {
 	// Player specific boolean flags
 	private boolean spacePressed;
 	private int spacedPressedEnabled;
-
+	private boolean forcingSynchronization;
+	private boolean forcingLocationSynchronization;
 	private boolean playerMoving;
 
 
@@ -28,7 +29,7 @@ public class Player implements Serializable {
 	private double y;
 	private double ang;
 	private int character;
-	private boolean forcingSynchronization;
+
 	private int playerType;
 	private int health;
 	private int nextPacket;
@@ -43,6 +44,7 @@ public class Player implements Serializable {
 		this.health = 3;
 		this.nextPacket = 0;
 		this.nextSoundInQue = null;
+		this.forcingLocationSynchronization = false;
 
 		// Player default position, TODO: Move this to a separate function
 		teleportToSpawn(existingPlayers);
@@ -304,7 +306,7 @@ public class Player implements Serializable {
 				(int) getX() + Stuff.random(15, 90), (int) getY() + Stuff.random(15, 90)
 		));
 
-		serverGame.playSoundNear(getX(), getY(), 1000, "stab");
+		serverGame.playSoundNear(getX(), getY(), 810 * 6, "stab");
 
 		// Check if player died
 		if (getHealth() <= 0) {
@@ -322,12 +324,14 @@ public class Player implements Serializable {
 	{
 		ang = Math.atan2(y - otherPlayer.getY(), x - otherPlayer.getX());
 		setForcingSynchronization(true);
+		setForcingLocationSynchronization(true);
 	}
 
 	void Face (double dx, double dy)
 	{
 		ang = Math.atan2(y - dy, x - dx);
 		setForcingSynchronization(true);
+		setForcingLocationSynchronization(true);
 	}
 
 	public int getNextPacket() {
@@ -355,5 +359,13 @@ public class Player implements Serializable {
 
 	public void setNextSoundInQue(String nextSoundInQue) {
 		this.nextSoundInQue = nextSoundInQue;
+	}
+
+	public boolean isForcingLocationSynchronization() {
+		return forcingLocationSynchronization;
+	}
+
+	public void setForcingLocationSynchronization(boolean forcingLocationSynchronization) {
+		this.forcingLocationSynchronization = forcingLocationSynchronization;
 	}
 }

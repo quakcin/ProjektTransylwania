@@ -73,7 +73,7 @@ public class Server
 					{
 						Player clientPlayer = (Player) clientResponse;
 						serverGame.setPlayerID(playerID);
-						if (!serverGame.getPlayer().isForcingSynchronization())
+						if (!serverGame.getPlayer().isForcingSynchronization() && !serverGame.getPlayer().isForcingLocationSynchronization())
 						{
 							serverGame.getPlayer().copyLocation(clientPlayer);
 							serverGame.getPlayer().copyFlags(clientPlayer);
@@ -81,7 +81,7 @@ public class Server
 						else
 						{
 							// even if tp'ed allow if not too far
-							if (serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 100)
+							if (serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 100 && !serverGame.getPlayer().isForcingLocationSynchronization())
 								serverGame.getPlayer().copyLocation(clientPlayer);
 							else
 							{
@@ -107,11 +107,12 @@ public class Server
 
 					// Send Back: serverGame object
 					// This should never be the case!
-					if (serverGame.getPlayer().getNextPacket() == 0 || serverGame.getPlayer().isForcingSynchronization())
+					if (serverGame.getPlayer().getNextPacket() == 0 || serverGame.getPlayer().isForcingSynchronization() || serverGame.getPlayer().isForcingLocationSynchronization())
 					{
 						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
 							System.out.println("ASSERTION FAILED");
 						serverGame.getPlayer().setForcingSynchronization(false);
+						serverGame.getPlayer().setForcingLocationSynchronization(false);
 						objOut.writeObject(serverGame); // FIXME: Split synchronization to smaller packets
 					}
 					else if (serverGame.getPlayer().getNextPacket() <= 10)

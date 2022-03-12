@@ -278,7 +278,7 @@ public class Client extends JFrame implements KeyListener
 								clientGame.getPlayer().setPlayerMoving(true);
 							}
 							if (keyboardState['s'])
-								clientGame.getPlayer().Push(-16.3, clientGame);
+								clientGame.getPlayer().Push(-12, clientGame);
 							if (keyboardState['a'])
 								clientGame.getPlayer().Turn(-10);
 							if (keyboardState['d'])
@@ -297,22 +297,22 @@ public class Client extends JFrame implements KeyListener
 										p.Push(16.3, clientGame);
 										if ((tick + clientGame.getPlayers().indexOf(p) * 3) % 15L == 0)
 											if (p.getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
-												Stuff.playSound("survStepSound");
+												Stuff.playSound("survStep");
 											else if (p.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
-												Stuff.playSound("vampStepSound");
+												Stuff.playSound("vampStep");
 											else if (p.getPlayerType() == Player.PLAYER_TYPE_GHOST)
-												Stuff.playSound("ghostStepSound");
+												Stuff.playSound("ghostStep");
 									}
 								}
 
 						if (tick % 13L == 0)
 							if (clientGame.getPlayer().isPlayerMoving())
 								if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
-									Stuff.playSound("selfStepSound");
+									Stuff.playSound("selfStep");
 								else if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
-									Stuff.playSound("vampStepSound");
+									Stuff.playSound("vampStep");
 								else if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_GHOST)
-									Stuff.playSound("ghostStepSound");
+									Stuff.playSound("ghostStep");
 
 						// Chase Song Handler / Mechanics
 						Player vamp = clientGame.getVamp();
@@ -366,7 +366,7 @@ public class Client extends JFrame implements KeyListener
 			{
 				try
 				{
-					socket = new Socket("26.106.248.14", Server.PORT);
+					socket = new Socket(/*"26.106.248.14"*/"127.0.0.1", Server.PORT);
 					socket.setTcpNoDelay(true);
 					objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 					objectInputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -446,6 +446,7 @@ public class Client extends JFrame implements KeyListener
 
 
 					clientGame.getPlayer().setForcingSynchronization(false);
+					clientGame.getPlayer().setForcingLocationSynchronization(false);
 					clientGame.getPlayer().NextPacket();
 					Thread.sleep(1000L / 25L);
 				}

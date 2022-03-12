@@ -139,11 +139,12 @@ class ServerBackgroundWorker
 		}
 
 		// WARN: Order matters
-		// -- in case someone uses lamp
-		lampActionListener();
 
 		// -- in case vamp attacks
 		vampAttackListener();
+
+		// -- in case someone uses lamp
+		lampActionListener();
 	}
 
 	private void UpdateSummary ()
@@ -168,6 +169,9 @@ class ServerBackgroundWorker
 					Lamp lampInUse = game.getLampInUse(p);
 					if (lampInUse != null)
 							lampInUse.UseLamp(p, game);
+					// Apply delay no matter what
+					p.setSpacePressedDisabled(25 * 2);
+					p.setForcingSynchronization(true);
 				}
 		// .Nice pyramid.
 	}
@@ -184,16 +188,25 @@ class ServerBackgroundWorker
 				if (prey != null)
 				{
 					double dist = prey.getDist(vamp.getX(), vamp.getY());
-					if (dist < 95)
+					if (dist < 100)
 					{
 						// Can attack
 						prey.Damage(1, game);
 						vamp.FacePlayer(prey);
+						vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_DELAY);
 					}
-					else if (dist < 130)
+					else if (dist < 250)
+					{
+						game.playSoundNear(vamp.getX(), vamp.getY(), 810 * 2, "vampMiss");
+						vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_MISS_DELAY);
 						vamp.FacePlayer(prey);
+					}
+					else
+					{
+						game.playSoundNear(vamp.getX(), vamp.getY(), 810 * 6, "vampScream");
+						// vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_MISS_DELAY); -- Lamps apply delay
+					}
 				}
-				vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_DELAY);
 				vamp.setForcingSynchronization(true);
 			}
 	}

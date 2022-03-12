@@ -13,7 +13,8 @@ class Game implements Serializable
 	static final int GAME_STATUS_SUMMARY = 3;
 
 	// -- In Game Flags and Constants
-	static final int VAMP_ATTACK_DELAY = 2 * 15;
+	static final int VAMP_ATTACK_DELAY = 30;
+	static final int VAMP_ATTACK_MISS_DELAY = 15;
 	static final int LOBBY_CHANGE_PLAYER_MODEL__DELAY = 15;
 
 	// -- Parameters for game loop
