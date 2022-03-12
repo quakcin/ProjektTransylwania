@@ -85,14 +85,13 @@ class ServerBackgroundWorker
 
 				double oldPlayerAngle = player.getAng();
 				double oldOtherPlayerAngle = otherPlayer.getAng();
+				player.setAng(oldOtherPlayerAngle);
+				otherPlayer.setAng(oldPlayerAngle);
 
 				while (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50)
 				{
-					player.setAng(oldOtherPlayerAngle);
-					player.Push(80, game);
-					player.setForcingSynchronization(true);
-					otherPlayer.setAng(oldPlayerAngle);
-					otherPlayer.Push(80, game);
+					player.Push(90, game);
+					otherPlayer.Push(90, game);
 				}
 				player.setAng(oldOtherPlayerAngle);
 				otherPlayer.setAng(oldPlayerAngle);

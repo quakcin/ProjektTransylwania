@@ -109,19 +109,27 @@ public class Server
 					// This should never be the case!
 					if (serverGame.getPlayer().getNextPacket() == 0 || serverGame.getPlayer().isForcingSynchronization())
 					{
+						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
+							System.out.println("ASSERTION FAILED");
 						serverGame.getPlayer().setForcingSynchronization(false);
 						objOut.writeObject(serverGame); // FIXME: Split synchronization to smaller packets
 					}
 					else if (serverGame.getPlayer().getNextPacket() <= 10)
 					{
+						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
+							System.out.println("ASSERTION FAILED");
 						objOut.writeObject(new PlayersListPacket(serverGame.getPlayers()));
 					}
 					else if (serverGame.getPlayer().getNextPacket() == 11)
 					{
+						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
+							System.out.println("ASSERTION FAILED");
 						objOut.writeObject(new PropsAndStatsListPacket(serverGame.getProps(), serverGame.getGameStatus(), serverGame.getWaitingTime(), serverGame.getGameTime()));
 					}
 					else if (serverGame.getPlayer().getNextPacket() == 12)
 					{
+						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
+							System.out.println("ASSERTION FAILED");
 						objOut.writeObject(new LampsListPacket(serverGame.getLamps()));
 					}
 
