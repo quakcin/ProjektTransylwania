@@ -83,6 +83,10 @@ public class Server
 							// even if tp'ed allow if not too far
 							if (serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 110)
 								serverGame.getPlayer().copyLocation(clientPlayer);
+							else
+							{
+								System.out.println("[DEBUG] Probably teleporting player, if not -> game is broken!");
+							}
 						}
 					}
 					else if (clientResponse instanceof Hello)

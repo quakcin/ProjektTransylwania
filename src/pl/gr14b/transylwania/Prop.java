@@ -121,8 +121,8 @@ class Lamp extends Prop implements Serializable
 
 		if (isEvent)
 		{
-			player.Face(getX() - 25, getY() - 25);
-			player.setSpacePressedDisabled(75);
+			player.Face(getX() - 45, getY() - 45);
+			player.setSpacePressedDisabled(25);
 			player.setForcingSynchronization(true);
 		}
 	}

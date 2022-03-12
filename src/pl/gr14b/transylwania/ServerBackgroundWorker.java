@@ -79,7 +79,7 @@ class ServerBackgroundWorker
 			{
 				Player player = players.get(i);
 				Player otherPlayer = players.get(j);
-				if (player.getPlayerID().equals(otherPlayer.getPlayerID()) || otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST || player.getPlayerType() == Player.PLAYER_TYPE_GHOST)
+				if (player.getPlayerID().equals(otherPlayer.getPlayerID()) || otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST)
 					continue;
 
 				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 35)
@@ -109,7 +109,6 @@ class ServerBackgroundWorker
 				lamp.BlowOut();
 
 			newVampire.setForcingSynchronization(true);
-
 		}
 		else if (tick % 20 == 0)
 		{
