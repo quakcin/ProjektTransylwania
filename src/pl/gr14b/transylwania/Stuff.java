@@ -121,7 +121,7 @@ public class Stuff
 		}
 
 		try {
-			vamp = new ImageIcon(new File("Stuff/vamp.png").getAbsolutePath());
+			vamp = new ImageIcon(new File("Stuff/vamp.gif").getAbsolutePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

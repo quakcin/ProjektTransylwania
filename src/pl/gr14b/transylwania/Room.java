@@ -12,7 +12,7 @@ class Room implements Serializable
 	{
 		this.x = x;
 		this.y = y;
-		this.texture = (int) Math.round(Math.random() * 3);
+		this.texture = Stuff.random(0, 11);
 	}
 
 	int getX() {

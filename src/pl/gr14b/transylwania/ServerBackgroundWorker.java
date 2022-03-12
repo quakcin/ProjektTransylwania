@@ -75,29 +75,32 @@ class ServerBackgroundWorker
 	{
 		ArrayList<Player> players = game.getPlayers();
 		for (int i = 0; i < players.size(); i++)
-			for (int j = 0; j < players.size(); j++)
+			for (int j = i + 1; j < players.size(); j++)
 			{
-				Player player = players.get(i);
-				Player otherPlayer = players.get(j);
+				Player player = game.getPlayers().get(i);
+				Player otherPlayer = game.getPlayers().get(j);
 
-				if (player.getPlayerID().equals(otherPlayer.getPlayerID()) || otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST)
-					continue;
-
-				double oldPlayerAngle = player.getAng();
-				double oldOtherPlayerAngle = otherPlayer.getAng();
-				player.setAng(oldOtherPlayerAngle);
-				otherPlayer.setAng(oldPlayerAngle);
-
-				while (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50)
+				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50)
 				{
+					double playerAngle = player.getAng();
+					double otherPlayerAngle = otherPlayer.getAng();
+
+					player.setAng(otherPlayerAngle);
+					otherPlayer.setAng(playerAngle);
+
 					player.Push(90, game);
 					otherPlayer.Push(90, game);
-				}
-				player.setAng(oldOtherPlayerAngle);
-				otherPlayer.setAng(oldPlayerAngle);
 
-				player.setForcingSynchronization(true);
-				otherPlayer.setForcingSynchronization(true);
+					player.setAng(playerAngle);
+					otherPlayer.setAng(otherPlayerAngle);
+
+					player.setPlayerMoving(true);
+					otherPlayer.setPlayerMoving(true);
+
+					player.setForcingSynchronization(true);
+					otherPlayer.setForcingSynchronization(true);
+				}
+
 			}
 	}
 

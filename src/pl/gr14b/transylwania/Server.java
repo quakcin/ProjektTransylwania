@@ -63,7 +63,7 @@ public class Server
 		{
 			while (!socket.isClosed())
 			{
-				//lock.lock();
+				lock.lock();
 				// -- do stuff
 				try
 				{
@@ -156,9 +156,9 @@ public class Server
 				finally
 				{
 					// -- release locks
-					//lock.unlock();
+					lock.unlock();
 					try {
-						// Thread.sleep(1000L / 25L);
+						Thread.sleep(5L);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
