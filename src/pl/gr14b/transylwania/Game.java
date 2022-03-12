@@ -62,8 +62,8 @@ class Game implements Serializable
 
 		for (int i = 0; i < MAP_SIZE * (MAP_SIZE + 1); i++)
 		{
-			verticalDoors[i] = Math.random() * 100 > 60;
-			horizontalDoors[i] = Math.random() * 100 > 75;
+			verticalDoors[i] = Math.random() * 100 > 75;
+			horizontalDoors[i] = Math.random() * 100 > 80;
 		}
 
 		for (int i = 0; i < MAP_SIZE; i++)
