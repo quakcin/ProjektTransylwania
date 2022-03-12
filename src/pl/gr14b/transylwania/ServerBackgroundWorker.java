@@ -79,16 +79,17 @@ class ServerBackgroundWorker
 			{
 				Player player = players.get(i);
 				Player otherPlayer = players.get(j);
+
 				if (player.getPlayerID().equals(otherPlayer.getPlayerID()) || otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST)
 					continue;
 
-				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 35)
+				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 80)
 				{
 					do
 					{
-						otherPlayer.setAng(otherPlayer.getAng() + 15 * (3.1415 / 180));
+						otherPlayer.setAng(otherPlayer.getAng() + 5 * (3.1415 / 180));
 					}
-					while (!otherPlayer.Push(90, game));
+					while (!otherPlayer.Push(120, game));
 					otherPlayer.setForcingSynchronization(true);
 					player.setForcingSynchronization(true);
 				}
