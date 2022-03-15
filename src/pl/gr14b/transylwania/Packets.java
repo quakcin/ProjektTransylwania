@@ -42,12 +42,18 @@ class PropsAndStatsListPacket extends Packets implements Serializable
 class LampsListPacket extends Packets implements Serializable
 {
 	private ArrayList<Lamp> lamps;
+	private double globalLight;
 
 	public ArrayList<Lamp> getLamps() {
 		return lamps;
 	}
-	LampsListPacket (ArrayList<Lamp> lamps)
+	LampsListPacket (ArrayList<Lamp> lamps, double globalLight)
 	{
 		this.lamps = lamps;
+		this.globalLight = globalLight;
+	}
+
+	public double getGlobalLight() {
+		return globalLight;
 	}
 }

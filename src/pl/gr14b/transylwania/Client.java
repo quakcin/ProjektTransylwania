@@ -16,12 +16,15 @@ import java.nio.Buffer;
 
 public class Client extends JFrame implements KeyListener
 {
+	static final double LIGHT_DELTA = 0.0015d;
 	private Game clientGame;
 	private ClientHandler clientHandler;
 	private GameHandler gameHandler;
 	private Boolean[] keyboardState;
 	private Canvas canvas;
 	private Stuff stuff;
+	private double privateLight;
+	private double globalLight;
 
 	Client ()
 	{
@@ -34,6 +37,7 @@ public class Client extends JFrame implements KeyListener
 		canvas = new Canvas();
 		add(canvas);
 		setVisible(true);
+		privateLight = 0.5d;
 
 		stuff = new Stuff();
 
@@ -70,7 +74,6 @@ public class Client extends JFrame implements KeyListener
 			return;
 		keyboardState[keyEvent.getKeyChar()] = false;
 	}
-
 
 	private class Canvas extends JPanel
 	{
@@ -184,7 +187,9 @@ public class Client extends JFrame implements KeyListener
 			}
 
 			// draw light mask
-			g.drawImage(stuff.getLightMask(), 0, 0, getBounds().width, getBounds().height, null);
+			if (Math.abs(privateLight - globalLight) > 0.1d)
+				privateLight += (globalLight > privateLight) ? +LIGHT_DELTA : -LIGHT_DELTA;
+			g.drawImage(getImageWithOpacity(stuff.getLightMask(), privateLight), 0, 0, getBounds().width, getBounds().height, null);
 
 			if (clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY)
 			{
@@ -252,6 +257,16 @@ public class Client extends JFrame implements KeyListener
 					}
 				}
 			}
+		}
+		
+		BufferedImage getImageWithOpacity (BufferedImage originalImage, double opacity)
+		{
+			BufferedImage bufferedImage = new BufferedImage(originalImage.getWidth(), originalImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g = bufferedImage.createGraphics();
+			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, (float) opacity));
+			g.drawImage(originalImage, 0, 0, null);
+			g.dispose();
+			return bufferedImage;
 		}
 	}
 
@@ -366,7 +381,7 @@ public class Client extends JFrame implements KeyListener
 			{
 				try
 				{
-					socket = new Socket(/*"26.106.248.14"*/"127.0.0.1", Server.PORT);
+					socket = new Socket("127.0.0.1", Server.PORT);
 					socket.setTcpNoDelay(true);
 					objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 					objectInputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -434,6 +449,11 @@ public class Client extends JFrame implements KeyListener
 					else if (serverResponse instanceof PropsAndStatsListPacket)
 					{
 						PropsAndStatsListPacket packet = ((PropsAndStatsListPacket) serverResponse);
+						// See if anything has changed
+						if (clientGame.getWaitingTime() != packet.waitingTime && clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY)
+							Stuff.playSound("tick");
+
+						// Remember changes.
 						clientGame.setProps(packet.getProps());
 						clientGame.setGameTime(packet.gameTime);
 						clientGame.setWaitingTime(packet.waitingTime);
@@ -441,9 +461,10 @@ public class Client extends JFrame implements KeyListener
 					}
 					else if (serverResponse instanceof LampsListPacket)
 					{
-						clientGame.setLamps(((LampsListPacket) serverResponse).getLamps());
+						LampsListPacket lampsListPacket = (LampsListPacket) serverResponse;
+						clientGame.setLamps(lampsListPacket.getLamps());
+						globalLight = lampsListPacket.getGlobalLight();
 					}
-
 
 					clientGame.getPlayer().setForcingSynchronization(false);
 					clientGame.getPlayer().setForcingLocationSynchronization(false);

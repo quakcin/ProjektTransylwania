@@ -37,13 +37,14 @@ class Game implements Serializable
 	// -- more data
 	private int waitingTime;
 	private int gameTime;
-
+	private double globalLight;
 
 	final int MAP_SIZE = 5;
 
 	// -- constructor
 	Game ()
 	{
+		globalLight = 0.65d;
 		waitingTime = 0;
 		gameTime = 0;
 		gameStatus = GAME_STATUS_LOBBY;
@@ -165,6 +166,7 @@ class Game implements Serializable
 		gameTime = 0;
 		gameStatus = GAME_STATUS_LOBBY;
 		lamps = new ArrayList<Lamp>();
+		setGlobalLight(0.6d);
 		GenerateMap();
 	}
 
@@ -310,4 +312,11 @@ class Game implements Serializable
 		}
 	}
 
+	public double getGlobalLight() {
+		return globalLight;
+	}
+
+	public void setGlobalLight(double globalLight) {
+		this.globalLight = globalLight;
+	}
 }

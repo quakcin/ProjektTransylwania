@@ -1,7 +1,5 @@
 package pl.gr14b.transylwania;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -109,29 +107,25 @@ public class Server
 					// This should never be the case!
 					if (serverGame.getPlayer().getNextPacket() == 0 || serverGame.getPlayer().isForcingSynchronization() || serverGame.getPlayer().isForcingLocationSynchronization())
 					{
-						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
-							System.out.println("ASSERTION FAILED");
+						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
 						serverGame.getPlayer().setForcingSynchronization(false);
 						serverGame.getPlayer().setForcingLocationSynchronization(false);
 						objOut.writeObject(serverGame); // FIXME: Split synchronization to smaller packets
 					}
 					else if (serverGame.getPlayer().getNextPacket() <= 10)
 					{
-						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
-							System.out.println("ASSERTION FAILED");
+						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
 						objOut.writeObject(new PlayersListPacket(serverGame.getPlayers()));
 					}
 					else if (serverGame.getPlayer().getNextPacket() == 11)
 					{
-						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
-							System.out.println("ASSERTION FAILED");
+						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
 						objOut.writeObject(new PropsAndStatsListPacket(serverGame.getProps(), serverGame.getGameStatus(), serverGame.getWaitingTime(), serverGame.getGameTime()));
 					}
 					else if (serverGame.getPlayer().getNextPacket() == 12)
 					{
-						if (!serverGame.getPlayer().getPlayerID().equals(playerID))
-							System.out.println("ASSERTION FAILED");
-						objOut.writeObject(new LampsListPacket(serverGame.getLamps()));
+						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
+						objOut.writeObject(new LampsListPacket(serverGame.getLamps(), serverGame.getGlobalLight()));
 					}
 
 					objOut.flush();
@@ -190,7 +184,7 @@ public class Server
 					lock.unlock();
 					try
 					{
-						Thread.sleep(1000L / 20L);
+						Thread.sleep(1000L / 20L); // 20 tps, DO NOT CHANGE
 					}
 					catch (Exception e)
 					{

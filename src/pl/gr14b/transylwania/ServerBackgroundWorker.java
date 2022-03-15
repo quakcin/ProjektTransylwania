@@ -55,8 +55,9 @@ class ServerBackgroundWorker
 					for (Player p : game.getPlayers())
 						p.teleportToSpawn(game.getPlayers());
 					game.setWaitingTime(5);
+					tick = 1; // reset ticks!
 				}
-				else if (tick % 10 == 0) // FIXME: TIMER SHOULD BE SET TO 20
+				else if (tick % 20 == 0) // FIXME: TIMER SHOULD BE SET TO 20
 					game.setWaitingTime(game.getWaitingTime() - 1);
 			}
 		}
@@ -79,6 +80,9 @@ class ServerBackgroundWorker
 			{
 				Player player = game.getPlayers().get(i);
 				Player otherPlayer = game.getPlayers().get(j);
+
+				if (player.getPlayerType() == Player.PLAYER_TYPE_GHOST || otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST)
+					continue;
 
 				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50)
 				{
@@ -114,16 +118,27 @@ class ServerBackgroundWorker
 			game.setGameStatus(Game.GAME_STATUS_KILLING);
 			Player newVampire = game.getPlayers().get((int) Math.round(Math.random() * (game.getPlayers().size() - 1)));
 			newVampire.setPlayerType(Player.PLAYER_TYPE_VAMPIRE);
-			game.setGameTime(game.countSurvivors() * 4 * 60);
+			newVampire.setForcingSynchronization(true);
+
+			// Set new game time
+			double[] timesPerPlayers = {3d, 4.5d, 5.5d, 6.3d, 7d, 7.5d, 8d};
+			game.setGameTime((int) Math.round(timesPerPlayers[game.countSurvivors() - 1] * 60d)); // WARN: Might get over bounds
+
+			// Blow out the lamps
 			for (Lamp lamp : game.getLamps())
 				lamp.BlowOut();
-
-			newVampire.setForcingSynchronization(true);
 		}
 		else if (tick % 20 == 0)
 		{
 			game.setWaitingTime(game.getWaitingTime() - 1);
 		}
+
+		if (tick == 56) // .magic number.
+		{
+			game.playSoundNear(0, 0, 100000L, "intro");
+			game.setGlobalLight(1.0d);
+		}
+
 	}
 
 	private void UpdateKilling ()
