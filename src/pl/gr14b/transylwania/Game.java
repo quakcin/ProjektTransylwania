@@ -223,10 +223,11 @@ class Game implements Serializable
 
 	public void spreadOutLampsAroundTheMap ()
 	{
-		for (int i = 0; i < players.size() * 16; i++)
+
+		for (int i = 0; i < players.size() * 5; i++)
 		{
-			int roomOffsetX = Stuff.random(0, MAP_SIZE - 1) * 810 + 90;
-			int roomOffsetY = Stuff.random(0, MAP_SIZE - 1) * 810 + 90;
+			int roomOffsetX = Stuff.random(0, MAP_SIZE - 1) * 810 + 2 * 90;
+			int roomOffsetY = Stuff.random(0, MAP_SIZE - 1) * 810 + 2 * 90;
 			int finX = Stuff.random(0, 810 - 2 * 90 - 50) + roomOffsetX;
 			int finY = Stuff.random(0, 810 - 2 * 90 - 50) + roomOffsetY;
 			lamps.add(new Lamp(finX, finY));

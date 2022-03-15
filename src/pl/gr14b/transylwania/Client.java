@@ -162,11 +162,16 @@ public class Client extends JFrame implements KeyListener
 				ImageIcon pfp = null;
 
 				if (p.getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
-					pfp = stuff.getSurvivors().get(p.getCharacter());
+					pfp = p.isPlayerMoving() ? stuff.getSurvivorsWalking().get(p.getCharacter()) : stuff.getSurvivorsStanding().get(p.getCharacter());
 				else if (p.getPlayerType() == Player.PLAYER_TYPE_GHOST)
 					pfp = stuff.getGhost();
 				else if (p.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
-					pfp = stuff.getVamp();
+					if (p.isSpacePressed())
+						pfp = stuff.getVampAttacking();
+					else if (p.isPlayerMoving())
+						pfp = stuff.getVampWalking();
+					else
+						pfp = stuff.getVampStanding();
 
 				AffineTransform aft = AffineTransform.getRotateInstance(p.getAng() + 1.57075, pfp.getIconWidth() >> 1, pfp.getIconHeight() >> 1);
 				AffineTransformOp aftop = new AffineTransformOp(aft, AffineTransformOp.TYPE_BILINEAR);
@@ -381,7 +386,7 @@ public class Client extends JFrame implements KeyListener
 			{
 				try
 				{
-					socket = new Socket("127.0.0.1", Server.PORT);
+					socket = new Socket(/*"26.106.248.14"*/"127.0.0.1", Server.PORT);
 					socket.setTcpNoDelay(true);
 					objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 					objectInputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));

@@ -22,7 +22,8 @@ public class Stuff
 	public static final int PLAYER_MODEL_COUNT = 3;
 
 	// Graphics
-	private ArrayList<ImageIcon> survivors;
+	private ArrayList<ImageIcon> survivorsWalking;
+	private ArrayList<ImageIcon> survivorsStanding;
 	private ArrayList<ImageIcon> bloodSplashes;
 	private ArrayList<ImageIcon> deadBodies;
 	private ArrayList<ImageIcon> lamps;
@@ -33,7 +34,10 @@ public class Stuff
 	private BufferedImage doorTexture;
 	private BufferedImage background;
 	private ImageIcon ghost;
-	private ImageIcon vamp;
+	private ImageIcon vampWalking;
+	private ImageIcon vampStanding;
+	private ImageIcon vampAttacking;
+
 	private BufferedImage arrow;
 	private Font font;
 
@@ -74,7 +78,8 @@ public class Stuff
 
 	Stuff()
 	{
-		survivors = new ArrayList<ImageIcon>();
+		survivorsWalking = new ArrayList<ImageIcon>();
+		survivorsStanding = new ArrayList<ImageIcon>();
 		deadBodies = new ArrayList<ImageIcon>();
 		bloodSplashes = new ArrayList<ImageIcon>();
 		lamps = new ArrayList<ImageIcon>();
@@ -82,7 +87,8 @@ public class Stuff
 		rooms = new ArrayList<Image>();
 		health = new ArrayList<Image>();
 
-		survivors = LoadImageIcons("Stuff/survivor-%d.gif");
+		survivorsWalking = LoadImageIcons("Stuff/survivor-%d.gif");
+		survivorsStanding = LoadImageIcons("Stuff/search-%d.gif");
 		deadBodies = LoadImageIcons("Stuff/body-%d.png");
 		bloodSplashes = LoadImageIcons("Stuff/blood-%d.png");
 		lamps = LoadImageIcons("Stuff/lamp-%d.gif");
@@ -121,7 +127,17 @@ public class Stuff
 		}
 
 		try {
-			vamp = new ImageIcon(new File("Stuff/vamp.gif").getAbsolutePath());
+			vampWalking = new ImageIcon(new File("Stuff/vamp.gif").getAbsolutePath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			vampStanding = new ImageIcon(new File("Stuff/vampStanding.gif").getAbsolutePath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		try {
+			vampAttacking = new ImageIcon(new File("Stuff/vampAttacking.gif").getAbsolutePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -177,10 +193,6 @@ public class Stuff
 		return icons;
 	}
 
-	ArrayList<ImageIcon> getSurvivors ()
-	{
-		return survivors;
-	}
 
 	BufferedImage getLightMask() {
 		return lightMask;
@@ -206,10 +218,6 @@ public class Stuff
 		return ghost;
 	}
 
-	ImageIcon getVamp() {
-		return vamp;
-	}
-
 	ArrayList<Image> getHealth() {
 		return health;
 	}
@@ -232,4 +240,43 @@ public class Stuff
 	}
 
 
+	public ArrayList<ImageIcon> getSurvivorsWalking() {
+		return survivorsWalking;
+	}
+
+	public void setSurvivorsWalking(ArrayList<ImageIcon> survivorsWalking) {
+		this.survivorsWalking = survivorsWalking;
+	}
+
+	public ArrayList<ImageIcon> getSurvivorsStanding() {
+		return survivorsStanding;
+	}
+
+	public void setSurvivorsStanding(ArrayList<ImageIcon> survivorsStanding) {
+		this.survivorsStanding = survivorsStanding;
+	}
+
+	public ImageIcon getVampWalking() {
+		return vampWalking;
+	}
+
+	public void setVampWalking(ImageIcon vampWalking) {
+		this.vampWalking = vampWalking;
+	}
+
+	public ImageIcon getVampStanding() {
+		return vampStanding;
+	}
+
+	public void setVampStanding(ImageIcon vampStanding) {
+		this.vampStanding = vampStanding;
+	}
+
+	public ImageIcon getVampAttacking() {
+		return vampAttacking;
+	}
+
+	public void setVampAttacking(ImageIcon vampAttacking) {
+		this.vampAttacking = vampAttacking;
+	}
 }

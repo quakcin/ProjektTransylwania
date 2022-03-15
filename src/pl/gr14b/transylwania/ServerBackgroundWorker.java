@@ -57,7 +57,7 @@ class ServerBackgroundWorker
 					game.setWaitingTime(5);
 					tick = 1; // reset ticks!
 				}
-				else if (tick % 20 == 0) // FIXME: TIMER SHOULD BE SET TO 20
+				else if (tick % 10 == 0) // FIXME: TIMER SHOULD BE SET TO 20
 					game.setWaitingTime(game.getWaitingTime() - 1);
 			}
 		}
@@ -148,7 +148,7 @@ class ServerBackgroundWorker
 			// NOW: Move to summary, either players are dead or vamp has dc'ed
 			game.setGameStatus(Game.GAME_STATUS_SUMMARY);
 		}
-		else if (tick % 20 == 0)
+		else if (tick % 10 == 0) // FIXME: It should be 20, even thought 10 works perfectly fine
 		{
 			game.setGameTime(game.getGameTime() - 1);
 		}

@@ -173,7 +173,6 @@ public class Server
 				try
 				{
 					serverBackgroundWorker.Update();
-					// System.out.printf("There are %d active connections!\n", serverGame.getPlayers().size());
 				}
 				catch (Exception e)
 				{
