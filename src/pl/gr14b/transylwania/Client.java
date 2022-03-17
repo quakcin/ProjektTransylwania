@@ -26,9 +26,19 @@ public class Client extends JFrame implements KeyListener
 	private double privateLight;
 	private double globalLight;
 
-	Client ()
+	// Meta
+	private String nickName;
+	private String ipAddress;
+	private int port;
+
+	Client (String nick, String ip, int port)
 	{
 		super();
+
+		this.nickName = nick;
+		this.ipAddress = ip;
+		this.port = port;
+
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 800));
 		setSize(new Dimension(800, 800));
@@ -244,6 +254,10 @@ public class Client extends JFrame implements KeyListener
 			if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
 				g.drawImage(stuff.getHealth().get(clientGame.getPlayer().getHealth()), getBounds().width - 30 - 90,50, 90, 108,null);
 
+			// draw summary
+			if (clientGame.getGameStatus() == Game.GAME_STATUS_SUMMARY)
+				g.drawImage(stuff.getSummary().get(clientGame.isWinnerFlag() ? 1 : 0), 0, 0, getWidth(), getHeight(), null);
+
 			g.dispose();
 		}
 
@@ -386,7 +400,7 @@ public class Client extends JFrame implements KeyListener
 			{
 				try
 				{
-					socket = new Socket("127.0.0.1", Server.PORT);
+					socket = new Socket(ipAddress, port);
 					socket.setTcpNoDelay(true);
 					objectOutputStream = new ObjectOutputStream(new BufferedOutputStream(socket.getOutputStream()));
 					objectInputStream = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -398,7 +412,7 @@ public class Client extends JFrame implements KeyListener
 				}
 			}
 			// Say Hello To The Server:
-			Hello helloPacket = new Hello("Test Player");
+			Hello helloPacket = new Hello(nickName);
 
 			try
 			{
@@ -463,6 +477,7 @@ public class Client extends JFrame implements KeyListener
 						clientGame.setGameTime(packet.gameTime);
 						clientGame.setWaitingTime(packet.waitingTime);
 						clientGame.setGameStatus(packet.gameStatus);
+						clientGame.setWinnerFlag(packet.isWinner);
 					}
 					else if (serverResponse instanceof LampsListPacket)
 					{
@@ -487,7 +502,7 @@ public class Client extends JFrame implements KeyListener
 
 	public static void main (String[] args)
 	{
-		new Client();
+		new Client("dev", "127.0.0.1", 6969);
 	}
 
 }

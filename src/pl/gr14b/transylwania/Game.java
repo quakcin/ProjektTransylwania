@@ -12,6 +12,11 @@ class Game implements Serializable
 	static final int GAME_STATUS_KILLING = 2;
 	static final int GAME_STATUS_SUMMARY = 3;
 
+	// -- Winner status
+	static final boolean WINNER_VAMP = true;
+	static final boolean WINNER_SURVIVOR = false;
+
+
 	// -- In Game Flags and Constants
 	static final int VAMP_ATTACK_DELAY = 30;
 	static final int VAMP_ATTACK_MISS_DELAY = 15;
@@ -38,6 +43,7 @@ class Game implements Serializable
 	private int waitingTime;
 	private int gameTime;
 	private double globalLight;
+	private boolean winnerFlag;
 
 	final int MAP_SIZE = 5;
 
@@ -51,6 +57,7 @@ class Game implements Serializable
 		players = new ArrayList<Player>();
 		props = new ArrayList<Prop>(); // reuse by Reset(), also set in GenerateMap()
 		lamps = new ArrayList<Lamp>();
+		winnerFlag = false;
 
 		playerID = null;
 		GenerateMap();
@@ -319,5 +326,13 @@ class Game implements Serializable
 
 	public void setGlobalLight(double globalLight) {
 		this.globalLight = globalLight;
+	}
+
+	public boolean isWinnerFlag() {
+		return winnerFlag;
+	}
+
+	public void setWinnerFlag(boolean winnerFlag) {
+		this.winnerFlag = winnerFlag;
 	}
 }

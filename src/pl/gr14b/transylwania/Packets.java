@@ -26,16 +26,18 @@ class PropsAndStatsListPacket extends Packets implements Serializable
 	int gameStatus;
 	int waitingTime;
 	int gameTime;
+	boolean isWinner;
 
 	public ArrayList<Prop> getProps() {
 		return props;
 	}
-	PropsAndStatsListPacket (ArrayList<Prop> props, int gameStatus, int waitingTime, int gameTime)
+	PropsAndStatsListPacket (ArrayList<Prop> props, int gameStatus, int waitingTime, int gameTime, boolean isWinner)
 	{
 		this.props = props;
 		this.gameStatus = gameStatus;
 		this.waitingTime = waitingTime;
 		this.gameTime = gameTime;
+		this.isWinner = isWinner;
 	}
 }
 

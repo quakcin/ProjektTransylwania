@@ -11,15 +11,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Server
 {
-	static final int PORT = 6969;
-
 	private ServerBackgroundWorker serverBackgroundWorker;
 	private final Lock lock;
 	private Game serverGame;
 
 	private ServerWorker serverWorker;
 
-	Server () throws Exception
+	Server (int port) throws Exception
 	{
 		lock = new ReentrantLock();
 		serverGame = new Game();
@@ -28,7 +26,7 @@ public class Server
 		serverWorker = new ServerWorker();
 		serverWorker.start();
 
-		ServerSocket serverSocket = new ServerSocket(PORT);
+		ServerSocket serverSocket = new ServerSocket(port);
 
 		while (!serverSocket.isClosed())
 		{
@@ -120,7 +118,7 @@ public class Server
 					else if (serverGame.getPlayer().getNextPacket() == 11)
 					{
 						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
-						objOut.writeObject(new PropsAndStatsListPacket(serverGame.getProps(), serverGame.getGameStatus(), serverGame.getWaitingTime(), serverGame.getGameTime()));
+						objOut.writeObject(new PropsAndStatsListPacket(serverGame.getProps(), serverGame.getGameStatus(), serverGame.getWaitingTime(), serverGame.getGameTime(), serverGame.isWinnerFlag()));
 					}
 					else if (serverGame.getPlayer().getNextPacket() == 12)
 					{
@@ -197,9 +195,31 @@ public class Server
 	public static void main (String[] args)
 	{
 		try {
-			new Server();
+			new Server(6969);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+}
+
+class ClientCreateServer
+{
+	private int port;
+	ClientCreateServer (int port)
+	{
+		this.port = port;
+		(new ClientSideServerThread()).start();
+	}
+	private class ClientSideServerThread extends Thread
+	{
+		@Override
+		public void run ()
+		{
+			try {
+				new Server(port);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

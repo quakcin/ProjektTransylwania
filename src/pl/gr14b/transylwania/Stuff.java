@@ -4,17 +4,11 @@ import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import java.applet.Applet;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 
 public class Stuff
@@ -28,6 +22,7 @@ public class Stuff
 
 	private ArrayList<Image> rooms;
 	private ArrayList<Image> health;
+	private ArrayList<Image> summary;
 	private BufferedImage lightMask;
 	private BufferedImage doorTexture;
 	private BufferedImage background;
@@ -93,6 +88,7 @@ public class Stuff
 
 		rooms = LoadImage("Stuff/room-%d.png");
 		health = LoadImage("Stuff/hp-%d.png");
+		summary = LoadImage("Stuff/summary-%d.png");
 
 		try {
 			arrow = ImageIO.read(new File("Stuff/arrow.png"));
@@ -276,5 +272,13 @@ public class Stuff
 
 	public void setVampAttacking(ImageIcon vampAttacking) {
 		this.vampAttacking = vampAttacking;
+	}
+
+	public ArrayList<Image> getSummary() {
+		return summary;
+	}
+
+	public void setSummary(ArrayList<Image> summary) {
+		this.summary = summary;
 	}
 }

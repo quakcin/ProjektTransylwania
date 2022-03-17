@@ -57,7 +57,7 @@ class ServerBackgroundWorker
 					game.setWaitingTime(5);
 					tick = 1; // reset ticks!
 				}
-				else if (tick % 10 == 0) // FIXME: TIMER SHOULD BE SET TO 20
+				else if (tick % 2 == 0) // FIXME: TIMER SHOULD BE SET TO 20
 					game.setWaitingTime(game.getWaitingTime() - 1);
 			}
 		}
@@ -128,7 +128,7 @@ class ServerBackgroundWorker
 			for (Lamp lamp : game.getLamps())
 				lamp.BlowOut();
 		}
-		else if (tick % 20 == 0)
+		else if (tick % 10 == 0) // FIXME: Timing
 		{
 			game.setWaitingTime(game.getWaitingTime() - 1);
 		}
@@ -146,7 +146,13 @@ class ServerBackgroundWorker
 		if (game.countSurvivors() <= 0 || !game.isVampireConnected() || game.getGameTime() <= 0)
 		{
 			// NOW: Move to summary, either players are dead or vamp has dc'ed
+			if (game.countSurvivors() <= 0)
+				game.setWinnerFlag(Game.WINNER_VAMP);
+			if (!game.isVampireConnected() || game.getGameTime() <= 0)
+				game.setWinnerFlag(Game.WINNER_SURVIVOR);
 			game.setGameStatus(Game.GAME_STATUS_SUMMARY);
+			System.out.println("Winner: " + (game.isWinnerFlag() ? "Vampire" : "Survivors"));
+			tick = 0;
 		}
 		else if (tick % 10 == 0) // FIXME: It should be 20, even thought 10 works perfectly fine
 		{
@@ -164,7 +170,10 @@ class ServerBackgroundWorker
 
 	private void UpdateSummary ()
 	{
-		game.Reset();
+		if (tick > 60)
+		{
+			game.Reset();
+		}
 	}
 
 	private void UpdateAlways ()
