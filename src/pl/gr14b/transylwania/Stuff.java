@@ -19,8 +19,6 @@ import java.util.ArrayList;
 
 public class Stuff
 {
-	public static final int PLAYER_MODEL_COUNT = 3;
-
 	// Graphics
 	private ArrayList<ImageIcon> survivorsWalking;
 	private ArrayList<ImageIcon> survivorsStanding;
@@ -59,7 +57,7 @@ public class Stuff
 	}
 	static int RandomDeadBody ()
 	{
-		return 0;
+		return random(0, 3);
 	}
 
 	static void playSound (String name)

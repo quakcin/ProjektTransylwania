@@ -11,7 +11,7 @@ public class Player implements Serializable {
 	static final int PLAYER_TYPE_VAMPIRE = 1;
 	static final int PLAYER_TYPE_GHOST = 2;
 
-	static final int PLAYER_MODELS_COUNT = 4;
+	static final int PLAYER_MODELS_COUNT = 8;
 
 	// Player specific boolean flags
 	private boolean spacePressed;
@@ -290,7 +290,7 @@ public class Player implements Serializable {
 		int oldCharacter = this.character;
 
 		do {
-			this.character = (int) Math.round(Math.random() * (Player.PLAYER_MODELS_COUNT - 1));
+			this.character = Stuff.random(0, PLAYER_MODELS_COUNT - 1);
 		}
 		while (oldCharacter == this.character);
 		setForcingSynchronization(true);
