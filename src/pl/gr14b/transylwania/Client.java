@@ -16,6 +16,7 @@ import java.net.Socket;
 public class Client extends JFrame implements KeyListener
 {
 	static final double LIGHT_DELTA = 0.0015d;
+	private boolean forceHalt;
 	private Game clientGame;
 	private ClientHandler clientHandler;
 	private GameHandler gameHandler;
@@ -35,6 +36,7 @@ public class Client extends JFrame implements KeyListener
 	{
 		super();
 
+		this.forceHalt = false;
 		this.nickName = nick;
 		this.ipAddress = ip;
 		this.port = port;
@@ -267,7 +269,7 @@ public class Client extends JFrame implements KeyListener
 			if (clientGame.getGameStatus() == Game.GAME_STATUS_SUMMARY)
 				g.drawImage(stuff.getSummary().get(clientGame.isWinnerFlag() ? 1 : 0), 0, 0, getWidth(), getHeight(), null);
 
-			if (--roleCallTime > 0)
+			if (--roleCallTime > 0 && clientGame.getPlayer().getPlayerType() != Player.PLAYER_TYPE_GHOST)
 				g.drawImage(stuff.getpType().get(clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_SURVIVOR ? 1 : 0), 0, 0, getWidth(), getHeight(), null);
 
 			g.dispose();
@@ -278,7 +280,7 @@ public class Client extends JFrame implements KeyListener
 			@Override
 			public void run ()
 			{
-				while (true)
+				while (!forceHalt)
 				{
 					try {
 						canvas.repaint();
@@ -310,7 +312,7 @@ public class Client extends JFrame implements KeyListener
 			long chaseSongPlayTime = 0;
 
 			try {
-				while (true)
+				while (!forceHalt)
 				{
 					tick += 1;
 					if (clientGame != null)
@@ -419,6 +421,11 @@ public class Client extends JFrame implements KeyListener
 				}
 				catch (Exception e)
 				{
+					JOptionPane.showMessageDialog(null, "Failed to connect to the server!");
+					new Menu();
+					forceHalt = true;
+					setDefaultCloseOperation(EXIT_ON_CLOSE);
+					dispose();
 					e.printStackTrace();
 					return;
 				}
@@ -447,7 +454,7 @@ public class Client extends JFrame implements KeyListener
 			}
 
 			// Carry On:
-			while (socket.isConnected())
+			while (socket.isConnected() && !forceHalt)
 			{
 				try
 				{
@@ -521,7 +528,12 @@ public class Client extends JFrame implements KeyListener
 				}
 				catch (Exception e)
 				{
+					setDefaultCloseOperation(EXIT_ON_CLOSE);
+					JOptionPane.showMessageDialog(null, "You have been disconnected from the server!");
+					forceHalt = true;
+					dispose();
 					e.printStackTrace();
+					break;
 				}
 			}
 		}

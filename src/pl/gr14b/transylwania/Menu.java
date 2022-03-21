@@ -148,14 +148,15 @@ class Locator
 	Locator (String location)
 	{
 		String[] tokens = location.split(":");
-		if (tokens.length != 2)
-		{
-			ip = "127.0.0.1";
-			port = 666;
-			return;
-		}
 
-		ip = tokens[0];
-		port = Integer.parseInt(tokens[1]);
+		if (tokens.length >= 1)
+			ip = tokens[0];
+		else
+			ip = "127.0.0.1";
+
+		if (tokens.length != 2)
+			port = Integer.parseInt(tokens[1]);
+		else
+			port = 666;
 	}
 }
