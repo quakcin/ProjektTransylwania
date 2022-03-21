@@ -11,10 +11,10 @@ class PlayersListPacket extends Packets implements Serializable
 {
 	private ArrayList<Player> players;
 
-	public ArrayList<Player> getPlayers() {
+	ArrayList<Player> getPlayers() {
 		return players;
 	}
-	public PlayersListPacket (ArrayList<Player> players)
+	PlayersListPacket(ArrayList<Player> players)
 	{
 		this.players = players;
 	}
@@ -28,7 +28,7 @@ class PropsAndStatsListPacket extends Packets implements Serializable
 	int gameTime;
 	boolean isWinner;
 
-	public ArrayList<Prop> getProps() {
+	ArrayList<Prop> getProps() {
 		return props;
 	}
 	PropsAndStatsListPacket (ArrayList<Prop> props, int gameStatus, int waitingTime, int gameTime, boolean isWinner)
@@ -46,7 +46,7 @@ class LampsListPacket extends Packets implements Serializable
 	private ArrayList<Lamp> lamps;
 	private double globalLight;
 
-	public ArrayList<Lamp> getLamps() {
+	ArrayList<Lamp> getLamps() {
 		return lamps;
 	}
 	LampsListPacket (ArrayList<Lamp> lamps, double globalLight)
@@ -55,7 +55,7 @@ class LampsListPacket extends Packets implements Serializable
 		this.globalLight = globalLight;
 	}
 
-	public double getGlobalLight() {
+	double getGlobalLight() {
 		return globalLight;
 	}
 }

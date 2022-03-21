@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 
-public class Player implements Serializable {
+class Player implements Serializable {
 	// Flags and stuff
 	static final int PLAYER_TYPE_SURVIVOR = 0;
 	static final int PLAYER_TYPE_VAMPIRE = 1;
 	static final int PLAYER_TYPE_GHOST = 2;
 
-	static final int PLAYER_MODELS_COUNT = 8;
+	private static final int PLAYER_MODELS_COUNT = 8;
 
 	// Player specific boolean flags
 	private boolean spacePressed;
@@ -20,8 +20,6 @@ public class Player implements Serializable {
 	private boolean forcingLocationSynchronization;
 	private boolean playerMoving;
 
-
-	public final double DEG = 0.0174527777777778;
 
 	private String nickName;
 	private UUID playerID;
@@ -79,13 +77,13 @@ public class Player implements Serializable {
 
 
 	private int pushAttempts;
-	boolean Push (double speed, Game clientGame)
+	void Push (double speed, Game clientGame)
 	{
 		pushAttempts = 0;
-		return RecursivePush(playerType == Player.PLAYER_TYPE_VAMPIRE ? speed * 1.2 : speed, clientGame);
+		RecursivePush(playerType == Player.PLAYER_TYPE_VAMPIRE ? speed * 1.2 : speed, clientGame);
 	}
 
-	boolean RecursivePush (double speed, Game clientGame) {
+	private void RecursivePush(double speed, Game clientGame) {
 		// TODO: Take speed into account
 		final double collider = 15;
 		double vx = getX() + -1 * Math.cos(ang) * speed;
@@ -94,7 +92,7 @@ public class Player implements Serializable {
 		if (playerType == PLAYER_TYPE_GHOST) {
 			x = vx;
 			y = vy;
-			return true;
+			return;
 		}
 
 		boolean allow = true;
@@ -157,16 +155,10 @@ public class Player implements Serializable {
 				RecursivePush(10, clientGame);
 			ang += 180 * (3.1415 / 180);
 		}
-		return allow;
 	}
 
 	void Turn(double delta) {
 		ang += delta * (3.1415 / 180);
-
-		if (delta < 0)
-			delta = 360 * (3.1415 / 180);
-		else if (delta > 2 * (3.1415 / 180))
-			delta = 0;
 	}
 
 	void copyLocation(Player otherPlayer) {
@@ -179,12 +171,8 @@ public class Player implements Serializable {
 		return character;
 	}
 
-	public void setCharacter(int character) {
-		this.character = character;
-	}
 
-
-	void serverTeleport(double dx, double dy) {
+	private void serverTeleport(double dx, double dy) {
 		x = dx;
 		y = dy;
 		forcingSynchronization = true;
@@ -266,13 +254,10 @@ public class Player implements Serializable {
 		this.ang = ang;
 	}
 
-	void setHealth(int health) {
+	private void setHealth(int health) {
 		if (health < 0)
 			this.health = 0;
-		else if (health > 3)
-			this.health = 3;
-		else
-			this.health = health;
+		else this.health = Math.min(health, 3);
 	}
 
 	double getDist(double dx, double dy) {
@@ -296,9 +281,9 @@ public class Player implements Serializable {
 		setForcingSynchronization(true);
 	}
 
-	void Damage(int delta, Game serverGame) // oop is rly gut
+	void Damage(Game serverGame) // oop is rly gut
 	{
-		setHealth(getHealth() - delta);
+		setHealth(getHealth() - 1);
 
 		// Spawn Blood
 		// TODO: Make the randomization a proper constructor
@@ -334,7 +319,7 @@ public class Player implements Serializable {
 		setForcingLocationSynchronization(true);
 	}
 
-	public int getNextPacket() {
+	int getNextPacket() {
 		return nextPacket;
 	}
 
@@ -345,27 +330,27 @@ public class Player implements Serializable {
 			this.nextPacket = 1;
 	}
 
-	public boolean isPlayerMoving() {
+	boolean isPlayerMoving() {
 		return playerMoving;
 	}
 
-	public void setPlayerMoving(boolean playerMoving) {
+	void setPlayerMoving(boolean playerMoving) {
 		this.playerMoving = playerMoving;
 	}
 
-	public String getNextSoundInQue() {
+	String getNextSoundInQue() {
 		return nextSoundInQue;
 	}
 
-	public void setNextSoundInQue(String nextSoundInQue) {
+	void setNextSoundInQue(String nextSoundInQue) {
 		this.nextSoundInQue = nextSoundInQue;
 	}
 
-	public boolean isForcingLocationSynchronization() {
+	boolean isForcingLocationSynchronization() {
 		return forcingLocationSynchronization;
 	}
 
-	public void setForcingLocationSynchronization(boolean forcingLocationSynchronization) {
+	void setForcingLocationSynchronization(boolean forcingLocationSynchronization) {
 		this.forcingLocationSynchronization = forcingLocationSynchronization;
 	}
 }

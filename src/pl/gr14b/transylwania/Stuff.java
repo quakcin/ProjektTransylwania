@@ -11,7 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Stuff
+class Stuff
 {
 	// Graphics
 	private ArrayList<ImageIcon> survivorsWalking;
@@ -42,11 +42,6 @@ public class Stuff
 		return (int) Math.round(Math.random() * (mx - mm - 1)) + mm;
 	}
 
-	static int random (double mm, double mx)
-	{
-		return (int) (Math.round(Math.random() * (mx - mm - 1)) + mm);
-	}
-
 	static int RandomBloodSplash ()
 	{
 		return random(0, 4);
@@ -72,14 +67,14 @@ public class Stuff
 
 	Stuff()
 	{
-		survivorsWalking = new ArrayList<ImageIcon>();
-		survivorsStanding = new ArrayList<ImageIcon>();
-		deadBodies = new ArrayList<ImageIcon>();
-		bloodSplashes = new ArrayList<ImageIcon>();
-		lamps = new ArrayList<ImageIcon>();
+		survivorsWalking = new ArrayList<>();
+		survivorsStanding = new ArrayList<>();
+		deadBodies = new ArrayList<>();
+		bloodSplashes = new ArrayList<>();
+		lamps = new ArrayList<>();
 
-		rooms = new ArrayList<Image>();
-		health = new ArrayList<Image>();
+		rooms = new ArrayList<>();
+		health = new ArrayList<>();
 
 		survivorsWalking = LoadImageIcons("Stuff/survivor-%d.gif");
 		survivorsStanding = LoadImageIcons("Stuff/search-%d.gif");
@@ -149,7 +144,7 @@ public class Stuff
 
 	private ArrayList<ImageIcon> LoadImageIcons (String path)
 	{
-		ArrayList<ImageIcon> icons = new ArrayList<ImageIcon>();
+		ArrayList<ImageIcon> icons = new ArrayList<>();
 		for (int i = 0; i < 0xFF; i++)
 		{
 			File fd = new File(String.format(path, i));
@@ -168,7 +163,7 @@ public class Stuff
 
 	private ArrayList<Image> LoadImage (String path)
 	{
-		ArrayList<Image> icons = new ArrayList<Image>();
+		ArrayList<Image> icons = new ArrayList<>();
 		for (int i = 0; i < 0xFF; i++)
 		{
 			File fd = new File(String.format(path, i));
@@ -218,73 +213,49 @@ public class Stuff
 		return health;
 	}
 
-	public ArrayList<ImageIcon> getDeadBodies() {
+	ArrayList<ImageIcon> getDeadBodies() {
 		return deadBodies;
 	}
 
 
-	public ArrayList<ImageIcon> getBloodSplashes() {
+	ArrayList<ImageIcon> getBloodSplashes() {
 		return bloodSplashes;
 	}
 
-	public ArrayList<ImageIcon> getLamps() {
+	ArrayList<ImageIcon> getLamps() {
 		return lamps;
 	}
 
-	public BufferedImage getArrow() {
+	BufferedImage getArrow() {
 		return arrow;
 	}
 
 
-	public ArrayList<ImageIcon> getSurvivorsWalking() {
+	ArrayList<ImageIcon> getSurvivorsWalking() {
 		return survivorsWalking;
 	}
 
-	public void setSurvivorsWalking(ArrayList<ImageIcon> survivorsWalking) {
-		this.survivorsWalking = survivorsWalking;
-	}
-
-	public ArrayList<ImageIcon> getSurvivorsStanding() {
+	ArrayList<ImageIcon> getSurvivorsStanding() {
 		return survivorsStanding;
 	}
 
-	public void setSurvivorsStanding(ArrayList<ImageIcon> survivorsStanding) {
-		this.survivorsStanding = survivorsStanding;
-	}
-
-	public ImageIcon getVampWalking() {
+	ImageIcon getVampWalking() {
 		return vampWalking;
 	}
 
-	public void setVampWalking(ImageIcon vampWalking) {
-		this.vampWalking = vampWalking;
-	}
-
-	public ImageIcon getVampStanding() {
+	ImageIcon getVampStanding() {
 		return vampStanding;
 	}
 
-	public void setVampStanding(ImageIcon vampStanding) {
-		this.vampStanding = vampStanding;
-	}
-
-	public ImageIcon getVampAttacking() {
+	ImageIcon getVampAttacking() {
 		return vampAttacking;
 	}
 
-	public void setVampAttacking(ImageIcon vampAttacking) {
-		this.vampAttacking = vampAttacking;
-	}
-
-	public ArrayList<Image> getSummary() {
+	ArrayList<Image> getSummary() {
 		return summary;
 	}
 
-	public void setSummary(ArrayList<Image> summary) {
-		this.summary = summary;
-	}
-
-	public ArrayList<Image> getpType() {
+	ArrayList<Image> getpType() {
 		return pType;
 	}
 }

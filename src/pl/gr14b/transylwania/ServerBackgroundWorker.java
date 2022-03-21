@@ -142,12 +142,12 @@ class ServerBackgroundWorker
 
 	private void UpdateKilling ()
 	{
-		if (game.countSurvivors() <= 0 || !game.isVampireConnected() || game.getGameTime() <= 0)
+		if (game.countSurvivors() <= 0 || game.isVampireConnected() || game.getGameTime() <= 0)
 		{
 			// NOW: Move to summary, either players are dead or vamp has dc'ed
 			if (game.countSurvivors() <= 0)
 				game.setWinnerFlag(Game.WINNER_VAMP);
-			if (!game.isVampireConnected() || game.getGameTime() <= 0)
+			if (game.isVampireConnected() || game.getGameTime() <= 0)
 				game.setWinnerFlag(Game.WINNER_SURVIVOR);
 			game.setGameStatus(Game.GAME_STATUS_SUMMARY);
 			System.out.println("Winner: " + (game.isWinnerFlag() ? "Vampire" : "Survivors"));
@@ -214,7 +214,7 @@ class ServerBackgroundWorker
 					if (dist < 100)
 					{
 						// Can attack
-						prey.Damage(1, game);
+						prey.Damage(game);
 						vamp.FacePlayer(prey);
 						vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_DELAY);
 					}

@@ -1,6 +1,5 @@
 package pl.gr14b.transylwania;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.Serializable;
 
@@ -33,9 +32,9 @@ abstract class Prop implements Serializable
 		return this.sprite;
 	}
 
-	void setSprite (int sprite)
+	void setSprite()
 	{
-		this.sprite = sprite;
+		this.sprite = 0;
 	}
 
 	abstract void Draw(Graphics g, int offX, int offY, Stuff stuff, Game clientGame);
@@ -76,9 +75,9 @@ class DeadBody extends Prop implements Serializable
 
 class Lamp extends Prop implements Serializable
 {
-	final static int LAMP_DISABLED = 0;
-	final static int LAMP_ENABLED = 1;
-	final static int LAMP_BROKEN = 2;
+	private final static int LAMP_DISABLED = 0;
+	private final static int LAMP_ENABLED = 1;
+	private final static int LAMP_BROKEN = 2;
 
 	// Fields
 	private int status;
@@ -130,7 +129,7 @@ class Lamp extends Prop implements Serializable
 	void BlowOut ()
 	{
 		this.status = 0;
-		setSprite(0);
+		setSprite();
 	}
 
 }

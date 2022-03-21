@@ -55,9 +55,9 @@ class Game implements Serializable
 		waitingTime = 0;
 		gameTime = 0;
 		gameStatus = GAME_STATUS_LOBBY;
-		players = new ArrayList<Player>();
-		props = new ArrayList<Prop>(); // reuse by Reset(), also set in GenerateMap()
-		lamps = new ArrayList<Lamp>();
+		players = new ArrayList<>();
+		props = new ArrayList<>(); // reuse by Reset(), also set in GenerateMap()
+		lamps = new ArrayList<>();
 		winnerFlag = false;
 		// roleCallFlag = false;
 
@@ -67,7 +67,7 @@ class Game implements Serializable
 
 	private void GenerateMap ()
 	{
-		rooms = new ArrayList<Room>();
+		rooms = new ArrayList<>();
 		verticalDoors = new Boolean[MAP_SIZE * (MAP_SIZE + 1)];
 		horizontalDoors = new Boolean[MAP_SIZE * (MAP_SIZE + 1)];
 
@@ -174,7 +174,7 @@ class Game implements Serializable
 		waitingTime = (8 - players.size()) * 5;
 		gameTime = 0;
 		gameStatus = GAME_STATUS_LOBBY;
-		lamps = new ArrayList<Lamp>();
+		lamps = new ArrayList<>();
 		setGlobalLight(0.6d);
 		GenerateMap();
 	}
@@ -192,8 +192,8 @@ class Game implements Serializable
 	{
 		for (Player p : players)
 			if (p.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
-				return true;
-		return false;
+				return false;
+		return true;
 	}
 
 	Player getVamp ()
@@ -222,15 +222,15 @@ class Game implements Serializable
 		return nearest;
 	}
 
-	public ArrayList<Prop> getProps() {
+	ArrayList<Prop> getProps() {
 		return props;
 	}
 
-	public void setProps(ArrayList<Prop> props) {
+	void setProps(ArrayList<Prop> props) {
 		this.props = props;
 	}
 
-	public void spreadOutLampsAroundTheMap ()
+	void spreadOutLampsAroundTheMap()
 	{
 
 		for (int i = 0; i < players.size() * 5; i++)
@@ -243,17 +243,9 @@ class Game implements Serializable
 		}
 	}
 
-	public ArrayList<Lamp> getLamps ()
+	ArrayList<Lamp> getLamps()
 	{
 		return lamps;
-	}
-
-	public Player getPlayerByUUID (UUID id)
-	{
-		for (Player p : players)
-			if (p.getPlayerID().equals(id))
-				return p;
-		return null;
 	}
 
 	void setPlayers (ArrayList<Player> players)
@@ -303,9 +295,9 @@ class Game implements Serializable
 			return null;
 	}
 
-	public ArrayList<Player> getPlayersNear (double dx, double dy, double dist)
+	private ArrayList<Player> getPlayersNear(double dx, double dy, double dist)
 	{
-		ArrayList<Player> playersNear = new ArrayList<Player>();
+		ArrayList<Player> playersNear = new ArrayList<>();
 
 		for (Player p : players)
 			if (p.getDist(dx, dy) <= dist)
@@ -314,7 +306,7 @@ class Game implements Serializable
 		return playersNear;
 	}
 
-	public void playSoundNear (double dx, double dy, double near, String sound)
+	void playSoundNear(double dx, double dy, double near, String sound)
 	{
 		for (Player p : getPlayersNear(dx, dy, near)) {
 			p.setNextSoundInQue(sound);
@@ -322,19 +314,19 @@ class Game implements Serializable
 		}
 	}
 
-	public double getGlobalLight() {
+	double getGlobalLight() {
 		return globalLight;
 	}
 
-	public void setGlobalLight(double globalLight) {
+	void setGlobalLight(double globalLight) {
 		this.globalLight = globalLight;
 	}
 
-	public boolean isWinnerFlag() {
+	boolean isWinnerFlag() {
 		return winnerFlag;
 	}
 
-	public void setWinnerFlag(boolean winnerFlag) {
+	void setWinnerFlag(boolean winnerFlag) {
 		this.winnerFlag = winnerFlag;
 	}
 }

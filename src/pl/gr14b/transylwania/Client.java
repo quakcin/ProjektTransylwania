@@ -15,11 +15,9 @@ import java.net.Socket;
 
 public class Client extends JFrame implements KeyListener
 {
-	static final double LIGHT_DELTA = 0.0015d;
+	private static final double LIGHT_DELTA = 0.0015d;
 	private boolean forceHalt;
 	private Game clientGame;
-	private ClientHandler clientHandler;
-	private GameHandler gameHandler;
 	private Boolean[] keyboardState;
 	private Canvas canvas;
 	private Stuff stuff;
@@ -59,10 +57,10 @@ public class Client extends JFrame implements KeyListener
 			keyboardState[i] = false;
 
 		try {
-			clientHandler = new ClientHandler();
+			ClientHandler clientHandler = new ClientHandler();
 			clientHandler.start();
 
-			gameHandler = new GameHandler();
+			GameHandler gameHandler = new GameHandler();
 			gameHandler.start();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,14 +84,6 @@ public class Client extends JFrame implements KeyListener
 		if (keyEvent.getKeyChar() >= 0xFF)
 			return;
 		keyboardState[keyEvent.getKeyChar()] = false;
-	}
-
-	public int getRoleCallTime() {
-		return roleCallTime;
-	}
-
-	public void setRoleCallTime(int roleCallTime) {
-		this.roleCallTime = roleCallTime;
 	}
 
 	private class Canvas extends JPanel
@@ -194,6 +184,7 @@ public class Client extends JFrame implements KeyListener
 					else
 						pfp = stuff.getVampStanding();
 
+				assert pfp != null;
 				AffineTransform aft = AffineTransform.getRotateInstance(p.getAng() + 1.57075, pfp.getIconWidth() >> 1, pfp.getIconHeight() >> 1);
 				AffineTransformOp aftop = new AffineTransformOp(aft, AffineTransformOp.TYPE_BILINEAR);
 
@@ -251,7 +242,7 @@ public class Client extends JFrame implements KeyListener
 						double ay = Math.sin(ang) * 115;
 						// Rotate Arrow
 						BufferedImage arrow = new BufferedImage(stuff.getArrow().getWidth(), stuff.getArrow().getHeight(), BufferedImage.TYPE_INT_ARGB);
-						Graphics2D arrGfx = (Graphics2D) arrow.createGraphics();
+						Graphics2D arrGfx = arrow.createGraphics();
 						arrGfx.rotate(ang + (90 * (3.1415 / 180)), arrow.getWidth() >> 1, arrow.getHeight() >> 1);
 						arrGfx.drawImage(stuff.getArrow(), 0, 0, null);
 						g.drawImage(arrow, (int) ax - 20 + offX, (int) ay - 20 + offY, 40, 40, null);
@@ -394,13 +385,13 @@ public class Client extends JFrame implements KeyListener
 
 	private class ClientHandler extends Thread
 	{
-		private Socket socket;
-		private ObjectOutputStream objectOutputStream;
-		private ObjectInputStream objectInputStream;
 
 		@Override
 		public void run ()
 		{
+			Socket socket;
+			ObjectOutputStream objectOutputStream;
+			ObjectInputStream objectInputStream;
 			try
 			{
 				// Wait a while before connection, JFrame likes to mess up the memory
@@ -427,6 +418,7 @@ public class Client extends JFrame implements KeyListener
 					setDefaultCloseOperation(EXIT_ON_CLOSE);
 					dispose();
 					e.printStackTrace();
+					//noinspection ReturnInsideFinallyBlock
 					return;
 				}
 			}
@@ -472,8 +464,7 @@ public class Client extends JFrame implements KeyListener
 					if (serverResponse instanceof Game)
 					{
 						// Reroute references:
-						Game serverGame = (Game) serverResponse;
-						clientGame = (Game) serverGame;
+						clientGame = (Game) serverResponse;
 					}
 					else if (serverResponse instanceof PlayersListPacket)
 					{

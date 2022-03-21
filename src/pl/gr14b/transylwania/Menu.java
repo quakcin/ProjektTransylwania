@@ -92,7 +92,7 @@ public class Menu extends JFrame
 		setVisible(true);
 	}
 
-	private class Background extends JPanel
+	private static class Background extends JPanel
 	{
 		private ImageIcon bgImage;
 		Background ()
@@ -143,8 +143,8 @@ public class Menu extends JFrame
 
 class Locator
 {
-	public String ip;
-	public int port;
+	String ip;
+	int port;
 	Locator (String location)
 	{
 		String[] tokens = location.split(":");

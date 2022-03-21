@@ -15,15 +15,13 @@ public class Server
 	private final Lock lock;
 	private Game serverGame;
 
-	private ServerWorker serverWorker;
-
 	Server (int port) throws Exception
 	{
 		lock = new ReentrantLock();
 		serverGame = new Game();
 		serverBackgroundWorker = new ServerBackgroundWorker(serverGame);
 		// TOO SLOW:
-		serverWorker = new ServerWorker();
+		ServerWorker serverWorker = new ServerWorker();
 		serverWorker.start();
 
 		ServerSocket serverSocket = new ServerSocket(port);
@@ -43,7 +41,6 @@ public class Server
 		private ObjectOutputStream objOut;
 		private ObjectInputStream objIn;
 		private UUID playerID;
-		private String playerNickname;
 
 		ServerHandler(Socket socket) throws Exception
 		{
@@ -97,7 +94,6 @@ public class Server
 						Hello helloPacket = (Hello) clientResponse;
 						playerID = serverGame.playerJoinEvent(helloPacket.getNickName(), serverGame.getPlayers());
 						serverGame.setPlayerID(playerID);
-						playerNickname = helloPacket.getNickName();
 						System.out.printf("Player %s has joined!\n", playerID);
 					}
 
@@ -165,6 +161,7 @@ public class Server
 		@Override
 		public void run()
 		{
+			//noinspection InfiniteLoopStatement
 			while (true)
 			{
 				lock.lock();
