@@ -12,7 +12,6 @@ import java.io.BufferedOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.nio.Buffer;
 
 public class Client extends JFrame implements KeyListener
 {
@@ -25,6 +24,7 @@ public class Client extends JFrame implements KeyListener
 	private Stuff stuff;
 	private double privateLight;
 	private double globalLight;
+	private int roleCallTime;
 
 	// Meta
 	private String nickName;
@@ -48,6 +48,7 @@ public class Client extends JFrame implements KeyListener
 		add(canvas);
 		setVisible(true);
 		privateLight = 0.5d;
+		roleCallTime = 0;
 
 		stuff = new Stuff();
 
@@ -83,6 +84,14 @@ public class Client extends JFrame implements KeyListener
 		if (keyEvent.getKeyChar() >= 0xFF)
 			return;
 		keyboardState[keyEvent.getKeyChar()] = false;
+	}
+
+	public int getRoleCallTime() {
+		return roleCallTime;
+	}
+
+	public void setRoleCallTime(int roleCallTime) {
+		this.roleCallTime = roleCallTime;
 	}
 
 	private class Canvas extends JPanel
@@ -257,6 +266,9 @@ public class Client extends JFrame implements KeyListener
 			// draw summary
 			if (clientGame.getGameStatus() == Game.GAME_STATUS_SUMMARY)
 				g.drawImage(stuff.getSummary().get(clientGame.isWinnerFlag() ? 1 : 0), 0, 0, getWidth(), getHeight(), null);
+
+			if (--roleCallTime > 0)
+				g.drawImage(stuff.getpType().get(clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_SURVIVOR ? 1 : 0), 0, 0, getWidth(), getHeight(), null);
 
 			g.dispose();
 		}
@@ -447,6 +459,9 @@ public class Client extends JFrame implements KeyListener
 					// Sync our clientGame object with the server contents
 					Object serverResponse = objectInputStream.readObject();
 
+					// Heuristics for known game changes
+					int oldGameStatus = clientGame.getGameStatus();
+
 					if (serverResponse instanceof Game)
 					{
 						// Reroute references:
@@ -489,6 +504,19 @@ public class Client extends JFrame implements KeyListener
 					clientGame.getPlayer().setForcingSynchronization(false);
 					clientGame.getPlayer().setForcingLocationSynchronization(false);
 					clientGame.getPlayer().NextPacket();
+
+
+					// More heuristics
+					if (clientGame.getGameStatus() != oldGameStatus && clientGame.getGameStatus() == Game.GAME_STATUS_KILLING)
+					{
+						// set role call display timer
+						roleCallTime = 25 * 4;
+						if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
+							Stuff.playSound("vamp-theme");
+						else
+							Stuff.playSound("surv-theme");
+					}
+
 					Thread.sleep(1000L / 25L);
 				}
 				catch (Exception e)

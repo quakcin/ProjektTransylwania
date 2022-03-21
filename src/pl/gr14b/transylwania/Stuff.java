@@ -23,6 +23,7 @@ public class Stuff
 	private ArrayList<Image> rooms;
 	private ArrayList<Image> health;
 	private ArrayList<Image> summary;
+	private ArrayList<Image> pType;
 	private BufferedImage lightMask;
 	private BufferedImage doorTexture;
 	private BufferedImage background;
@@ -89,6 +90,7 @@ public class Stuff
 		rooms = LoadImage("Stuff/room-%d.png");
 		health = LoadImage("Stuff/hp-%d.png");
 		summary = LoadImage("Stuff/summary-%d.png");
+		pType = LoadImage("Stuff/ptype-%d.png");
 
 		try {
 			arrow = ImageIO.read(new File("Stuff/arrow.png"));
@@ -280,5 +282,9 @@ public class Stuff
 
 	public void setSummary(ArrayList<Image> summary) {
 		this.summary = summary;
+	}
+
+	public ArrayList<Image> getpType() {
+		return pType;
 	}
 }

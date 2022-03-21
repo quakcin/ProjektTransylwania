@@ -128,7 +128,7 @@ class ServerBackgroundWorker
 			for (Lamp lamp : game.getLamps())
 				lamp.BlowOut();
 		}
-		else if (tick % 10 == 0) // FIXME: Timing
+		else if (tick % 20 == 0) // FIXME: Timing
 		{
 			game.setWaitingTime(game.getWaitingTime() - 1);
 		}
@@ -138,7 +138,6 @@ class ServerBackgroundWorker
 			game.playSoundNear(0, 0, 100000L, "intro");
 			game.setGlobalLight(1.0d);
 		}
-
 	}
 
 	private void UpdateKilling ()

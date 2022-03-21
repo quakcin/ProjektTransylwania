@@ -44,6 +44,7 @@ class Game implements Serializable
 	private int gameTime;
 	private double globalLight;
 	private boolean winnerFlag;
+	// private boolean roleCallFlag; <-- guess this on client side
 
 	final int MAP_SIZE = 5;
 
@@ -58,6 +59,7 @@ class Game implements Serializable
 		props = new ArrayList<Prop>(); // reuse by Reset(), also set in GenerateMap()
 		lamps = new ArrayList<Lamp>();
 		winnerFlag = false;
+		// roleCallFlag = false;
 
 		playerID = null;
 		GenerateMap();
