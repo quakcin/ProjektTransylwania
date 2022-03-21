@@ -171,7 +171,6 @@ class Player implements Serializable {
 		return character;
 	}
 
-
 	private void serverTeleport(double dx, double dy) {
 		x = dx;
 		y = dy;

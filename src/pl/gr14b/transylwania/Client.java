@@ -374,7 +374,12 @@ public class Client extends JFrame implements KeyListener
 							Stuff.playSound(clientGame.getPlayer().getNextSoundInQue());
 							clientGame.getPlayer().setNextSoundInQue(null);
 						}
+
+						if (clientGame.getGameStatus() == Game.GAME_STATUS_KILLING && (tick % 25) == 0)
+							if (clientGame.getGameTime() > 0 && clientGame.getGameTime() <= 15)
+								Stuff.playSound("tick");
 					}
+
 					Thread.sleep(1000L / 25L);
 				}
 			} catch (InterruptedException e) {
