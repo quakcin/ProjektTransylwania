@@ -27,6 +27,7 @@ class Player implements Serializable {
 	private double y;
 	private double ang;
 	private int character;
+	private int afkPenalty;
 
 	private int playerType;
 	private int health;
@@ -329,7 +330,7 @@ class Player implements Serializable {
 	void NextPacket ()
 	{
 		this.nextPacket += 1;
-		if (this.nextPacket > 13)
+		if (this.nextPacket > 14)
 			this.nextPacket = 1;
 	}
 
@@ -363,5 +364,13 @@ class Player implements Serializable {
 
 	void setY (double y) {
 		this.y = y;
+	}
+
+	public int getAfkPenalty() {
+		return afkPenalty;
+	}
+
+	public void setAfkPenalty(int afkPenalty) {
+		this.afkPenalty = afkPenalty;
 	}
 }

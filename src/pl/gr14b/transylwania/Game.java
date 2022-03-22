@@ -177,6 +177,7 @@ class Game implements Serializable
 		gameTime = 0;
 		gameStatus = GAME_STATUS_LOBBY;
 		lamps = new ArrayList<>();
+		chests = new ArrayList<>();
 		setGlobalLight(0.6d);
 		GenerateMap();
 	}

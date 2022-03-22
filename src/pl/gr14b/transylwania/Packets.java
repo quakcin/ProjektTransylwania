@@ -20,23 +20,32 @@ class PlayersListPacket extends Packets implements Serializable
 	}
 }
 
-class PropsAndStatsListPacket extends Packets implements Serializable
+class PropsPacket extends Packets implements Serializable
 {
 	private ArrayList<Prop> props;
-	int gameStatus;
-	int waitingTime;
-	int gameTime;
-	boolean isWinner;
 
 	ArrayList<Prop> getProps() {
 		return props;
 	}
-	PropsAndStatsListPacket (ArrayList<Prop> props, int gameStatus, int waitingTime, int gameTime, boolean isWinner)
+	PropsPacket(ArrayList<Prop> props)
 	{
 		this.props = props;
+	}
+}
+
+class FlagPacket extends Packets implements Serializable
+{
+	int gameStatus;
+	int waitingTime;
+	int gameTime;
+	int afkPenalty;
+	boolean isWinner;
+	FlagPacket (int gameStatus, int waitingTime, int gameTime, int afkPenalty, boolean isWinner)
+	{
 		this.gameStatus = gameStatus;
 		this.waitingTime = waitingTime;
 		this.gameTime = gameTime;
+		this.afkPenalty = afkPenalty;
 		this.isWinner = isWinner;
 	}
 }

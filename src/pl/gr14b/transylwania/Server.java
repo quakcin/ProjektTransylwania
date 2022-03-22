@@ -114,7 +114,7 @@ public class Server
 					else if (serverGame.getPlayer().getNextPacket() == 11)
 					{
 						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
-						objOut.writeObject(new PropsAndStatsListPacket(serverGame.getProps(), serverGame.getGameStatus(), serverGame.getWaitingTime(), serverGame.getGameTime(), serverGame.isWinnerFlag()));
+						objOut.writeObject(new PropsPacket(serverGame.getProps()));
 					}
 					else if (serverGame.getPlayer().getNextPacket() == 12)
 					{
@@ -125,6 +125,18 @@ public class Server
 					{
 						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
 						objOut.writeObject(new ChestsListPacket(serverGame.getChests()));
+					}
+					else if (serverGame.getPlayer().getNextPacket() == 14)
+					{
+						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
+						objOut.writeObject(
+								new FlagPacket(serverGame.getGameStatus(),
+										serverGame.getWaitingTime(),
+										serverGame.getGameTime(),
+										serverGame.getPlayer().getAfkPenalty(),
+										serverGame.isWinnerFlag())
+						);
+
 					}
 
 					objOut.flush();

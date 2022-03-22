@@ -489,19 +489,10 @@ public class Client extends JFrame implements KeyListener
 							}
 
 					}
-					else if (serverResponse instanceof PropsAndStatsListPacket)
+					else if (serverResponse instanceof PropsPacket)
 					{
-						PropsAndStatsListPacket packet = ((PropsAndStatsListPacket) serverResponse);
-						// See if anything has changed
-						if (clientGame.getWaitingTime() != packet.waitingTime && clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY)
-							Stuff.playSound("tick");
-
-						// Remember changes.
+						PropsPacket packet = ((PropsPacket) serverResponse);
 						clientGame.setProps(packet.getProps());
-						clientGame.setGameTime(packet.gameTime);
-						clientGame.setWaitingTime(packet.waitingTime);
-						clientGame.setGameStatus(packet.gameStatus);
-						clientGame.setWinnerFlag(packet.isWinner);
 					}
 					else if (serverResponse instanceof LampsListPacket)
 					{
@@ -513,6 +504,19 @@ public class Client extends JFrame implements KeyListener
 					{
 						ChestsListPacket chestsListPacket = (ChestsListPacket) serverResponse;
 						clientGame.setChests(chestsListPacket.getChests());
+					}
+					else if (serverResponse instanceof FlagPacket)
+					{
+						FlagPacket packet = ((FlagPacket) serverResponse);
+						// See if anything has changed
+						if (clientGame.getWaitingTime() != packet.waitingTime && clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY)
+							Stuff.playSound("tick");
+
+						// Remember changes.
+						clientGame.setGameTime(packet.gameTime);
+						clientGame.setWaitingTime(packet.waitingTime);
+						clientGame.setGameStatus(packet.gameStatus);
+						clientGame.setWinnerFlag(packet.isWinner);
 					}
 
 					clientGame.getPlayer().setForcingSynchronization(false);
