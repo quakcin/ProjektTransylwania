@@ -94,6 +94,7 @@ public class Client extends JFrame implements KeyListener
 			Redraw redraw = new Redraw();
 			redraw.start();
 		}
+
 		@Override
 		protected void paintComponent (Graphics g)
 		{
@@ -236,25 +237,13 @@ public class Client extends JFrame implements KeyListener
 				else
 					g.drawString("" + seconds + "s", 50, getBounds().height - 50);
 
-				if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
-				{
-					Player pointTo = clientGame.getNearestPlayerToPointTo();
-					if (pointTo != null)
-					{
-						// Draw Arrow here:
-						Player player = clientGame.getPlayer();
-						double ang = Math.atan2(player.getY() - pointTo.getY(), player.getX() - pointTo.getX());
-						double ax = Math.cos(ang) * 115;
-						double ay = Math.sin(ang) * 115;
-						// Rotate Arrow
-						BufferedImage arrow = new BufferedImage(stuff.getArrow().getWidth(), stuff.getArrow().getHeight(), BufferedImage.TYPE_INT_ARGB);
-						Graphics2D arrGfx = arrow.createGraphics();
-						arrGfx.rotate(ang + (90 * (3.1415 / 180)), arrow.getWidth() >> 1, arrow.getHeight() >> 1);
-						arrGfx.drawImage(stuff.getArrow(), 0, 0, null);
-						g.drawImage(arrow, (int) ax - 20 + offX, (int) ay - 20 + offY, 40, 40, null);
-						arrGfx.dispose();
-					}
+				if (clientGame.getPlayer().getPlayerType() == Player.PLAYER_TYPE_VAMPIRE) {
+					VampDefaultArrow(g, offX, offY);
+					for (Player p : clientGame.getPlayers())
+						if (p.getAfkPenalty() > 15)
+							PointArrowTo(g, offX, offY, p.getX(), p.getY());
 				}
+
 
 			}
 
@@ -298,6 +287,32 @@ public class Client extends JFrame implements KeyListener
 			g.dispose();
 			return bufferedImage;
 		}
+
+		void PointArrowTo (Graphics g, int offX, int offY, double dx, double dy)
+		{
+			// Draw Arrow here:
+			Player player = clientGame.getPlayer();
+			if (player.getDist(dx, dy) < 500)
+				return;
+
+			double ang = Math.atan2(player.getY() - dy, player.getX() - dx);
+			double ax = Math.cos(ang) * 115;
+			double ay = Math.sin(ang) * 115;
+			// Rotate Arrow
+			BufferedImage arrow = new BufferedImage(stuff.getArrow().getWidth(), stuff.getArrow().getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics2D arrGfx = arrow.createGraphics();
+			arrGfx.rotate(ang + (90 * (3.1415 / 180)), arrow.getWidth() >> 1, arrow.getHeight() >> 1);
+			arrGfx.drawImage(stuff.getArrow(), 0, 0, null);
+			g.drawImage(arrow, (int) ax - 20 + offX, (int) ay - 20 + offY, 40, 40, null);
+			arrGfx.dispose();
+		}
+
+		void VampDefaultArrow (Graphics g, int offX, int offY)
+		{
+			Player pointTo = clientGame.getNearestPlayerToPointTo();
+			if (pointTo != null)
+				PointArrowTo(g, offX, offY, pointTo.getX(), pointTo.getY());
+		}
 	}
 
 	private class GameHandler extends Thread
@@ -308,7 +323,8 @@ public class Client extends JFrame implements KeyListener
 			long tick = 0;
 			long chaseSongPlayTime = 0;
 
-			try {
+			try
+			{
 				while (!forceHalt)
 				{
 					tick += 1;

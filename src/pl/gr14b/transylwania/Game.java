@@ -61,7 +61,6 @@ class Game implements Serializable
 		lamps = new ArrayList<>();
 		chests = new ArrayList<>();
 		winnerFlag = false;
-		// roleCallFlag = false;
 
 		playerID = null;
 		GenerateMap();
@@ -348,10 +347,9 @@ class Game implements Serializable
 			return null;
 
 		double maxVisDistance = Math.ceil((double) countSurvivors() / 3.5) * 810 + 500;
-		double minVisDistance = 500; // FIXME: .Make it smarter.
 		double distToPlayer = vamp.getDist(surv.getX(), surv.getY());
 
-		if (distToPlayer <= maxVisDistance && distToPlayer >= minVisDistance)
+		if (distToPlayer <= maxVisDistance)
 			return surv;
 		else
 			return null;
@@ -400,6 +398,14 @@ class Game implements Serializable
 	void setChests (ArrayList<Chest> chests)
 	{
 		this.chests = chests;
+	}
+
+	Player getPlayerByID (UUID id)
+	{
+		for (Player p : players)
+			if (p.getPlayerID().equals(id))
+				return p;
+		return null;
 	}
 
 }

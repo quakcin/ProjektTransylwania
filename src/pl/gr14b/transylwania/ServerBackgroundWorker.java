@@ -1,21 +1,21 @@
 package pl.gr14b.transylwania;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
-class ServerBackgroundWorker
-{
+class ServerBackgroundWorker {
 	private Game game;
 	private int tick;
 
-	ServerBackgroundWorker (Game game)
-	{
+	ServerBackgroundWorker(Game game) {
 		this.game = game;
 		playersInQue = 0;
 		tick = 0;
 	}
 
-	void Update ()
-	{
+	void Update() {
 		if (game.getGameStatus() == Game.GAME_STATUS_LOBBY)
 			UpdateLobby();
 		else if (game.getGameStatus() == Game.GAME_STATUS_INTRO)
@@ -32,24 +32,18 @@ class ServerBackgroundWorker
 
 	private int playersInQue;
 
-	private void UpdateLobby ()
-	{
+	private void UpdateLobby() {
 		int playersCount = game.getPlayers().size();
-		if (playersCount != playersInQue)
-		{
+		if (playersCount != playersInQue) {
 			// -- change waiting time!
 			if (playersCount >= 2)
 				game.setWaitingTime((8 - playersCount) * 5);
 			else
 				game.setWaitingTime(8 * 5);
 			playersInQue = playersCount;
-		}
-		else
-		{
-			if (playersCount >= 2)
-			{
-				if (game.getWaitingTime() <= 0)
-				{
+		} else {
+			if (playersCount >= 2) {
+				if (game.getWaitingTime() <= 0) {
 					game.setGameStatus(Game.GAME_STATUS_INTRO);
 					game.spreadOutLamps();
 					game.spreadOutChests();
@@ -57,36 +51,34 @@ class ServerBackgroundWorker
 						p.teleportToSpawn(game.getPlayers());
 					game.setWaitingTime(5);
 					tick = 1; // reset ticks!
-				}
-				else if (tick % 2 == 0) // FIXME: TIMER SHOULD BE SET TO 20
+				} else if (tick % 2 == 0) // FIXME: TIMER SHOULD BE SET TO 20
 					game.setWaitingTime(game.getWaitingTime() - 1);
 			}
 		}
 
 		// event when: player presses space:
 		for (Player p : game.getPlayers())
-			if (p.isSpacePressed())
-			{
+			if (p.isSpacePressed()) {
 				// set to a random survivor icon
 				p.randomizeCharacter();
 				p.setSpacePressedDisabled(Game.LOBBY_CHANGE_PLAYER_MODEL__DELAY);
 			}
 	}
 
-	private void CollisionWatch ()
-	{
+	private void CollisionWatch() {
 		ArrayList<Player> players = game.getPlayers();
 		for (int i = 0; i < players.size(); i++)
-			for (int j = i + 1; j < players.size(); j++)
-			{
+			for (int j = i + 1; j < players.size(); j++) {
 				Player player = game.getPlayers().get(i);
 				Player otherPlayer = game.getPlayers().get(j);
 
 				if (player.getPlayerType() == Player.PLAYER_TYPE_GHOST || otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST)
 					continue;
 
-				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50)
-				{
+				if (Chest.isPlayerHidden(game.getChests(), player.getPlayerID()) || Chest.isPlayerHidden(game.getChests(), otherPlayer.getPlayerID()))
+					continue;
+
+				if (player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50) {
 					double playerAngle = player.getAng();
 					double otherPlayerAngle = otherPlayer.getAng();
 
@@ -109,12 +101,10 @@ class ServerBackgroundWorker
 			}
 	}
 
-	private void UpdateIntro ()
-	{
+	private void UpdateIntro() {
 		// FIXME: MAKE SURE THAT THERE IS AT LEAST TWO PLAYERS
 		//        AND REFACTOR OLD RANDOMS INTO NEW ONES
-		if (game.getWaitingTime() <= 0)
-		{
+		if (game.getWaitingTime() <= 0) {
 			// Blow out the lamps then choose vampire
 			game.setGameStatus(Game.GAME_STATUS_KILLING);
 			Player newVampire = game.getPlayers().get((int) Math.round(Math.random() * (game.getPlayers().size() - 1)));
@@ -128,8 +118,7 @@ class ServerBackgroundWorker
 			// Blow out the lamps
 			for (Lamp lamp : game.getLamps())
 				lamp.BlowOut();
-		}
-		else if (tick % 20 == 0) // FIXME: Timing
+		} else if (tick % 20 == 0) // FIXME: Timing
 		{
 			game.setWaitingTime(game.getWaitingTime() - 1);
 		}
@@ -141,10 +130,9 @@ class ServerBackgroundWorker
 		}
 	}
 
-	private void UpdateKilling ()
+	private void UpdateKilling()
 	{
-		if (game.countSurvivors() <= 0 || game.isVampireConnected() || game.getGameTime() <= 0)
-		{
+		if (game.countSurvivors() <= 0 || game.isVampireConnected() || game.getGameTime() <= 0) {
 			// NOW: Move to summary, either players are dead or vamp has dc'ed
 			if (game.countSurvivors() <= 0)
 				game.setWinnerFlag(Game.WINNER_VAMP);
@@ -153,8 +141,7 @@ class ServerBackgroundWorker
 			game.setGameStatus(Game.GAME_STATUS_SUMMARY);
 			System.out.println("Winner: " + (game.isWinnerFlag() ? "Vampire" : "Survivors"));
 			tick = 0;
-		}
-		else if (tick % 10 == 0) // FIXME: It should be 20, even thought 10 works perfectly fine
+		} else if (tick % 10 == 0) // FIXME: It should be 20, even thought 10 works perfectly fine
 		{
 			game.setGameTime(game.getGameTime() - 1);
 		}
@@ -169,41 +156,49 @@ class ServerBackgroundWorker
 
 		// -- in case someone uses chest
 		chestActionListener();
+
+		// -- Anti AFK
+		antiAFKFilter();
 	}
 
-	private void UpdateSummary ()
+	private void antiAFKFilter ()
 	{
-		if (tick > 60)
-		{
+		if (tick % 20 != 0)
+			return;
+
+		for (Chest chest : game.getChests())
+			if (chest.getPlayerUUID() != null) {
+				Player afkPlayer = game.getPlayerByID(chest.getPlayerUUID());
+				afkPlayer.setAfkPenalty(afkPlayer.getAfkPenalty() + 1);
+			}
+	}
+
+	private void UpdateSummary() {
+		if (tick > 60) {
 			game.Reset();
 		}
 	}
 
-	private void UpdateAlways ()
-	{
+	private void UpdateAlways() {
 		for (Player p : game.getPlayers())
 			if (p.getPlayerType() == Player.PLAYER_TYPE_GHOST)
 				if (p.getDist(game.MAP_SIZE * 405, game.MAP_SIZE * 405) > (game.MAP_SIZE + 1) * 405)
 					p.teleportToSpawn(game.getPlayers());
 	}
 
-	private void lampActionListener ()
-	{
+	private void lampActionListener() {
 		for (Player p : game.getPlayers())
 			if (p.getPlayerType() != Player.PLAYER_TYPE_GHOST) // TODO: .Ensure not zombie, in case we add one.
-				if (p.isSpacePressed())
-				{
+				if (p.isSpacePressed()) {
 					Lamp lampInUse = game.getLampInUse(p);
 					if (lampInUse != null)
-							lampInUse.UseLamp(p, game);
-					// Apply delay no matter what
-					/*
-					p.setSpacePressedDisabled(25 * 2);  // do this l8er
-					p.setForcingSynchronization(true);
-					 */
+						lampInUse.UseLamp(p, game);
 				}
 		// .Nice pyramid.
 	}
+
+
+
 
 	private void chestActionListener ()
 	{
@@ -215,7 +210,7 @@ class ServerBackgroundWorker
 					if (chestInUse != null)
 						chestInUse.UseChest(player, game);
 
-					player.setSpacePressedDisabled(50);
+					player.setSpacePressedDisabled(40);
 					player.setForcingSynchronization(true);
 				}
 	}
@@ -254,5 +249,4 @@ class ServerBackgroundWorker
 				vamp.setForcingSynchronization(true);
 			}
 	}
-
 }

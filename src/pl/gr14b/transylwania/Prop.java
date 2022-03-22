@@ -128,12 +128,14 @@ class Chest extends Prop implements Serializable
 			// leave chest!
 			playerUUID = null;
 			game.playSoundNear(getX(), getY(), 810, "chest_out");
+			player.setAfkPenalty(0);
 		}
 		else
 		{
 			// someone else is already in the chest
 			playerUUID = null;
 			game.playSoundNear(getX(), getY(), 810, "chest_blocked");
+			player.setAfkPenalty(0);
 		}
 	}
 
