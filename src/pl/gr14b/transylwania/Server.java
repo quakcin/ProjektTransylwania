@@ -121,6 +121,11 @@ public class Server
 						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
 						objOut.writeObject(new LampsListPacket(serverGame.getLamps(), serverGame.getGlobalLight()));
 					}
+					else if (serverGame.getPlayer().getNextPacket() == 13)
+					{
+						assert(serverGame.getPlayer().getPlayerID().equals(playerID));
+						objOut.writeObject(new ChestsListPacket(serverGame.getChests()));
+					}
 
 					objOut.flush();
 					objOut.reset();

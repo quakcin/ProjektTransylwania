@@ -35,6 +35,7 @@ class Game implements Serializable
 	private ArrayList<Prop> props;
 	private ArrayList<Lamp> lamps;
 	private ArrayList<Room> rooms;
+	private ArrayList<Chest> chests;
 
 	private Boolean[] verticalDoors;
 	private Boolean[] horizontalDoors;
@@ -58,6 +59,7 @@ class Game implements Serializable
 		players = new ArrayList<>();
 		props = new ArrayList<>(); // reuse by Reset(), also set in GenerateMap()
 		lamps = new ArrayList<>();
+		chests = new ArrayList<>();
 		winnerFlag = false;
 		// roleCallFlag = false;
 
@@ -230,16 +232,53 @@ class Game implements Serializable
 		this.props = props;
 	}
 
-	void spreadOutLampsAroundTheMap()
+	int randRoomPos (int objSize)
 	{
+		int roomEdge = (Stuff.random(0, MAP_SIZE - 1) * 810 + 2 * 90);
+		int roomOffset = Stuff.random(0, 810 - 2 * 90 - objSize - 20);
+		return roomEdge + roomOffset;
+	}
 
+	boolean isColliding (int dx, int dy)
+	{
+		for (Lamp lamp : getLamps())
+			if (lamp.getDist(dx, dy) < 100)
+				return true;
+
+		for (Chest chest : getChests())
+			if (chest.getDist(dx, dy) < 400)
+				return true;
+
+		return false;
+	}
+
+	Integer[] randSpot (int objSize)
+	{
+		Integer[] pos = new Integer[2];
+		do {
+			for (int i = 0; i < 2; i++)
+				pos[i] = randRoomPos(objSize);
+		}
+		while (isColliding(pos[0], pos[1]));
+		return pos;
+	}
+
+	void spreadOutLamps()
+	{
 		for (int i = 0; i < players.size() * 5; i++)
 		{
-			int roomOffsetX = Stuff.random(0, MAP_SIZE - 1) * 810 + 2 * 90;
-			int roomOffsetY = Stuff.random(0, MAP_SIZE - 1) * 810 + 2 * 90;
-			int finX = Stuff.random(0, 810 - 2 * 90 - 50) + roomOffsetX;
-			int finY = Stuff.random(0, 810 - 2 * 90 - 50) + roomOffsetY;
-			lamps.add(new Lamp(finX, finY));
+			Integer[] pos = randSpot(60);
+			lamps.add(new Lamp(pos[0], pos[1]));
+		}
+	}
+
+	void spreadOutChests()
+	{
+		for (int i = 0; i < players.size() * 6; i++)
+		{
+			Integer[] pos = randSpot(100);
+			System.out.println("New chest at: " + pos[0] + " x " + pos[1]);
+			chests.add(new Chest(pos[0], pos[1]));
 		}
 	}
 
@@ -256,6 +295,25 @@ class Game implements Serializable
 	void setLamps (ArrayList<Lamp> lamps)
 	{
 		this.lamps = lamps;
+	}
+
+	Chest getChestInUse (Player player)
+	{
+		Chest nearest = null;
+		double nDist = 0xFFFF;
+		for (Chest chest : chests)
+		{
+			double dist = player.getDist(chest.getX() - 30, chest.getY() - 30);
+			if (dist < nDist)
+			{
+				nDist = dist;
+				nearest = chest;
+			}
+		}
+		if (nDist < 90)
+			return nearest;
+		else
+			return null;
 	}
 
 	Lamp getLampInUse (Player player)
@@ -283,6 +341,9 @@ class Game implements Serializable
 		Player surv = getNearestSurvivor(vamp);
 
 		if (vamp == null || surv == null)
+			return null;
+
+		if (Chest.isPlayerHidden(getChests(), surv.getPlayerID()))
 			return null;
 
 		double maxVisDistance = Math.ceil((double) countSurvivors() / 3.5) * 810 + 500;
@@ -329,4 +390,15 @@ class Game implements Serializable
 	void setWinnerFlag(boolean winnerFlag) {
 		this.winnerFlag = winnerFlag;
 	}
+
+	ArrayList<Chest> getChests ()
+	{
+		return this.chests;
+	}
+
+	void setChests (ArrayList<Chest> chests)
+	{
+		this.chests = chests;
+	}
+
 }

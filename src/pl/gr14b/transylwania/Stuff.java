@@ -31,6 +31,7 @@ class Stuff
 	private ImageIcon vampWalking;
 	private ImageIcon vampStanding;
 	private ImageIcon vampAttacking;
+	private ImageIcon chest;
 
 	private BufferedImage arrow;
 	private Font font;
@@ -129,6 +130,12 @@ class Stuff
 		}
 		try {
 			vampAttacking = new ImageIcon(new File("Stuff/vampAttacking.gif").getAbsolutePath());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+			chest = new ImageIcon(new File("Stuff/chest.png").getAbsolutePath());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -257,5 +264,9 @@ class Stuff
 
 	ArrayList<Image> getpType() {
 		return pType;
+	}
+
+	public ImageIcon getChest() {
+		return chest;
 	}
 }

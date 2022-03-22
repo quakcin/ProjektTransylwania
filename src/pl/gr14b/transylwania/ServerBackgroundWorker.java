@@ -51,7 +51,8 @@ class ServerBackgroundWorker
 				if (game.getWaitingTime() <= 0)
 				{
 					game.setGameStatus(Game.GAME_STATUS_INTRO);
-					game.spreadOutLampsAroundTheMap();
+					game.spreadOutLamps();
+					game.spreadOutChests();
 					for (Player p : game.getPlayers())
 						p.teleportToSpawn(game.getPlayers());
 					game.setWaitingTime(5);
@@ -165,6 +166,9 @@ class ServerBackgroundWorker
 
 		// -- in case someone uses lamp
 		lampActionListener();
+
+		// -- in case someone uses chest
+		chestActionListener();
 	}
 
 	private void UpdateSummary ()
@@ -193,10 +197,27 @@ class ServerBackgroundWorker
 					if (lampInUse != null)
 							lampInUse.UseLamp(p, game);
 					// Apply delay no matter what
-					p.setSpacePressedDisabled(25 * 2);
+					/*
+					p.setSpacePressedDisabled(25 * 2);  // do this l8er
 					p.setForcingSynchronization(true);
+					 */
 				}
 		// .Nice pyramid.
+	}
+
+	private void chestActionListener ()
+	{
+		for (Player player : game.getPlayers())
+			if (player.getPlayerType() != Player.PLAYER_TYPE_GHOST)
+				if (player.isSpacePressed())
+				{
+					Chest chestInUse = game.getChestInUse(player);
+					if (chestInUse != null)
+						chestInUse.UseChest(player, game);
+
+					player.setSpacePressedDisabled(50);
+					player.setForcingSynchronization(true);
+				}
 	}
 
 	private void vampAttackListener ()

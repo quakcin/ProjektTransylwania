@@ -2,6 +2,8 @@ package pl.gr14b.transylwania;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.UUID;
 
 // TODO: Make a proper extended class instead of state-machine
 abstract class Prop implements Serializable
@@ -38,6 +40,11 @@ abstract class Prop implements Serializable
 	}
 
 	abstract void Draw(Graphics g, int offX, int offY, Stuff stuff, Game clientGame);
+
+	double getDist (double dx, double dy)
+	{
+		return Math.sqrt(Math.pow(dx - getX(), 2) + Math.pow(dy - getY(), 2));
+	}
 }
 
 class Blood extends Prop implements Serializable
@@ -72,6 +79,65 @@ class DeadBody extends Prop implements Serializable
 	}
 }
 
+class Chest extends Prop implements Serializable
+{
+	private UUID playerUUID;
+	Chest(int x, int y)
+	{
+		super(x, y, 0);
+		playerUUID = null;
+	}
+
+	@Override
+	void Draw(Graphics g, int offX, int offY, Stuff stuff, Game clientGame)
+	{
+		int dx = offX + (int) (clientGame.getPlayer().getX() - getX());
+		int dy = offY + (int) (clientGame.getPlayer().getY() - getY());
+		g.drawImage(stuff.getChest().getImage(), dx, dy, 70, 70, null);
+	}
+
+	public UUID getPlayerUUID() {
+		return playerUUID;
+	}
+
+	public void setPlayerUUID(UUID playerUUID) {
+		this.playerUUID = playerUUID;
+	}
+
+	public static boolean isPlayerHidden (ArrayList<Chest> chests, UUID playerID)
+	{
+		for (Chest chest : chests)
+			if (chest.getPlayerUUID() != null)
+				if (chest.getPlayerUUID().equals(playerID))
+					return true;
+		return false;
+	}
+
+	public void UseChest (Player player, Game game)
+	{
+		if (playerUUID == null)
+		{
+			// hide inside chest!
+			playerUUID = player.getPlayerID();
+			player.setX(getX());
+			player.setY(getY());
+			game.playSoundNear(getX(), getY(), 300, "chest_in");
+		}
+		else if (playerUUID.equals(player.getPlayerID()))
+		{
+			// leave chest!
+			playerUUID = null;
+			game.playSoundNear(getX(), getY(), 810, "chest_out");
+		}
+		else
+		{
+			// someone else is already in the chest
+			playerUUID = null;
+			game.playSoundNear(getX(), getY(), 810, "chest_blocked");
+		}
+	}
+
+}
 
 class Lamp extends Prop implements Serializable
 {

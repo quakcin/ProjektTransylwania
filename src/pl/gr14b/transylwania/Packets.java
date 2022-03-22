@@ -59,3 +59,16 @@ class LampsListPacket extends Packets implements Serializable
 		return globalLight;
 	}
 }
+
+class ChestsListPacket extends Packets implements Serializable
+{
+	private ArrayList<Chest> chests;
+	ChestsListPacket (ArrayList<Chest> chests)
+	{
+		this.chests = chests;
+	}
+
+	public ArrayList<Chest> getChests() {
+		return chests;
+	}
+}

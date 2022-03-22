@@ -79,6 +79,9 @@ class Player implements Serializable {
 	private int pushAttempts;
 	void Push (double speed, Game clientGame)
 	{
+		if (Chest.isPlayerHidden(clientGame.getChests(), playerID))
+			return;
+
 		pushAttempts = 0;
 		RecursivePush(playerType == Player.PLAYER_TYPE_VAMPIRE ? speed * 1.2 : speed, clientGame);
 	}
@@ -137,10 +140,11 @@ class Player implements Serializable {
 
 		for (Player p : clientGame.getPlayers())
 			if (p.getPlayerID() != getPlayerID() && p.getPlayerType() != PLAYER_TYPE_GHOST)
-				if (Math.sqrt(Math.pow(vx - p.getX(), 2) + Math.pow(vy - p.getY(), 2)) < 50) {
-					allow = false;
-					break;
-				}
+				if (!Chest.isPlayerHidden(clientGame.getChests(), p.getPlayerID()))
+					if (Math.sqrt(Math.pow(vx - p.getX(), 2) + Math.pow(vy - p.getY(), 2)) < 50) {
+						allow = false;
+						break;
+					}
 
 		if (allow)
 		{
@@ -325,7 +329,7 @@ class Player implements Serializable {
 	void NextPacket ()
 	{
 		this.nextPacket += 1;
-		if (this.nextPacket > 12)
+		if (this.nextPacket > 13)
 			this.nextPacket = 1;
 	}
 
@@ -351,5 +355,13 @@ class Player implements Serializable {
 
 	void setForcingLocationSynchronization(boolean forcingLocationSynchronization) {
 		this.forcingLocationSynchronization = forcingLocationSynchronization;
+	}
+
+	void setX (double x) {
+		this.x = x;
+	}
+
+	void setY (double y) {
+		this.y = y;
 	}
 }

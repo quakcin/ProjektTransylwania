@@ -160,11 +160,17 @@ public class Client extends JFrame implements KeyListener
 			for (Lamp lamp : clientGame.getLamps())
 				lamp.Draw(g, offX, offY, stuff, clientGame);
 
+			for (Chest chest : clientGame.getChests())
+				chest.Draw(g, offX, offY, stuff, clientGame);
+
 			// Draw Players
 
 			for (Player p : clientGame.getPlayers())
 			{
 				if ((p.getPlayerType() == Player.PLAYER_TYPE_GHOST && p.getPlayerID() != clientGame.getPlayer().getPlayerID()) && clientGame.getPlayer().getPlayerType() != Player.PLAYER_TYPE_GHOST)
+					continue;
+
+				if (Chest.isPlayerHidden(clientGame.getChests(), p.getPlayerID()))
 					continue;
 
 				int cx = offX + (int) (clientGame.getPlayer().getX() - p.getX());
@@ -502,6 +508,11 @@ public class Client extends JFrame implements KeyListener
 						LampsListPacket lampsListPacket = (LampsListPacket) serverResponse;
 						clientGame.setLamps(lampsListPacket.getLamps());
 						globalLight = lampsListPacket.getGlobalLight();
+					}
+					else if (serverResponse instanceof ChestsListPacket)
+					{
+						ChestsListPacket chestsListPacket = (ChestsListPacket) serverResponse;
+						clientGame.setChests(chestsListPacket.getChests());
 					}
 
 					clientGame.getPlayer().setForcingSynchronization(false);
