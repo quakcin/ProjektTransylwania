@@ -37,7 +37,7 @@ class ServerBackgroundWorker {
 		if (playersCount != playersInQue) {
 			// -- change waiting time!
 			if (playersCount >= 2)
-				game.setWaitingTime((8 - playersCount) * 5);
+				game.setWaitingTime((8 - playersCount) * 2);
 			else
 				game.setWaitingTime(8 * 5);
 			playersInQue = playersCount;
@@ -51,7 +51,7 @@ class ServerBackgroundWorker {
 						p.teleportToSpawn(game.getPlayers());
 					game.setWaitingTime(5);
 					tick = 1; // reset ticks!
-				} else if (tick % 2 == 0) // FIXME: TIMER SHOULD BE SET TO 20
+				} else if (tick % 10 == 0) // FIXME: TIMER SHOULD BE SET TO 20
 					game.setWaitingTime(game.getWaitingTime() - 1);
 			}
 		}

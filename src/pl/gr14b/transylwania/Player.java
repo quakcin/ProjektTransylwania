@@ -373,4 +373,13 @@ class Player implements Serializable {
 	public void setAfkPenalty(int afkPenalty) {
 		this.afkPenalty = afkPenalty;
 	}
+
+	boolean isHidden (ArrayList<Chest> chests)
+	{
+		for (Chest chest : chests)
+			if (chest.getPlayerUUID() != null)
+				if (chest.getPlayerUUID().equals(getPlayerID()))
+					return true;
+		return false;
+	}
 }

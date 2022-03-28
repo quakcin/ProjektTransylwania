@@ -179,6 +179,15 @@ class Game implements Serializable
 		chests = new ArrayList<>();
 		setGlobalLight(0.6d);
 		GenerateMap();
+
+		// Remove dead bodies
+		for (int i = props.size() - 1; i >= 0; i--)
+			if (props.get(i) instanceof DeadBody)
+				props.remove(i);
+
+		int stopLimit = Math.max(32, props.size());
+		for (int i = props.size(); i >= stopLimit; i--)
+			props.remove(i);
 	}
 
 	int countSurvivors ()

@@ -56,7 +56,7 @@ public class Menu extends JFrame
 		networkData.setBounds(200, 380, 400, 45);
 		networkData.setFont(font.deriveFont(Font.PLAIN, 28));
 		networkData.setHorizontalAlignment(SwingConstants.CENTER);
-		networkData.setText("127.0.0.1:6969");
+		networkData.setText("127.0.0.1:666");
 		networkData.setOpaque(false);
 		networkData.setForeground(new Color(250, 250, 250));
 		networkData.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, new Color(250, 250, 250)));
@@ -79,6 +79,7 @@ public class Menu extends JFrame
 		localButton.setFont(font.deriveFont(Font.PLAIN, 22));
 		localButton.setForeground(new Color(250, 250, 250));
 		panel.add(localButton);
+		localButton.addActionListener(new LocalGameClick());
 
 		JButton hostButton = new JButton("Host");
 		hostButton.setBounds(500, 480 + 20, 100, 40);
@@ -136,6 +137,15 @@ public class Menu extends JFrame
 			System.out.println("Joining " + locator.ip + " on the port " + locator.port + " as " + nick);
 			new Client(nick, locator.ip, locator.port);
 			mainFrame.dispose();
+		}
+	}
+
+	private class LocalGameClick implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent actionEvent)
+		{
+			networkData.setText("172.0.0.1:666");
 		}
 	}
 

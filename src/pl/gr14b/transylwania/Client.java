@@ -39,6 +39,7 @@ public class Client extends JFrame implements KeyListener
 		this.ipAddress = ip;
 		this.port = port;
 
+		setTitle("Transylwania");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setMinimumSize(new Dimension(800, 800));
 		setSize(new Dimension(800, 800));
@@ -380,7 +381,7 @@ public class Client extends JFrame implements KeyListener
 						if (vamp != null)
 							if (vamp.getPlayerID() != clientGame.getPlayer().getPlayerID())
 							{
-								if (clientGame.getPlayer().getDist(vamp.getX(), vamp.getY()) > 900)
+								if (clientGame.getPlayer().getDist(vamp.getX(), vamp.getY()) > 900 || clientGame.getVamp().isHidden(clientGame.getChests()))
 									chaseSongPlayTime = 0;
 								else if (chaseSongPlayTime == 3)
 									Stuff.playSound("chase");
@@ -412,7 +413,6 @@ public class Client extends JFrame implements KeyListener
 
 	private class ClientHandler extends Thread
 	{
-
 		@Override
 		public void run ()
 		{
