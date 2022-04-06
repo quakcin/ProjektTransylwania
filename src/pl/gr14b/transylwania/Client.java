@@ -167,10 +167,12 @@ public class Client extends JFrame implements KeyListener
 
 			// Draw Players
 
+			boolean isHidden = clientGame.getPlayer().isHidden(clientGame.getChests());
 			for (Player p : clientGame.getPlayers())
 			{
-				if ((p.getPlayerType() == Player.PLAYER_TYPE_GHOST && p.getPlayerID() != clientGame.getPlayer().getPlayerID()) && clientGame.getPlayer().getPlayerType() != Player.PLAYER_TYPE_GHOST)
-					continue;
+				if (!isHidden)
+					if ((p.getPlayerType() == Player.PLAYER_TYPE_GHOST && p.getPlayerID() != clientGame.getPlayer().getPlayerID()) && clientGame.getPlayer().getPlayerType() != Player.PLAYER_TYPE_GHOST)
+						continue;
 
 				if (Chest.isPlayerHidden(clientGame.getChests(), p.getPlayerID()))
 					continue;

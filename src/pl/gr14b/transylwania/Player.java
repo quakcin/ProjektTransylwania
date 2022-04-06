@@ -297,6 +297,11 @@ class Player implements Serializable {
 
 		serverGame.playSoundNear(getX(), getY(), 810 * 6, "stab");
 
+		for (Chest chest : serverGame.getChests())
+			if (chest.getPlayerUUID() != null)
+				if (chest.getPlayerUUID().equals(playerID))
+					chest.setPlayerUUID(null);
+
 		// Check if player died
 		if (getHealth() <= 0) {
 			setPlayerType(Player.PLAYER_TYPE_GHOST);
