@@ -6,11 +6,6 @@ import java.util.UUID;
 
 class Game implements Serializable
 {
-	// -- Game Status (Engine) flags
-	static final int GAME_STATUS_LOBBY = 0;
-	static final int GAME_STATUS_INTRO = 1;
-	static final int GAME_STATUS_KILLING = 2;
-	static final int GAME_STATUS_SUMMARY = 3;
 
 	// -- Winner status
 	static final boolean WINNER_VAMP = true;
@@ -30,7 +25,7 @@ class Game implements Serializable
 	private UUID playerID;
 
 	// -- game info
-	private int gameStatus;
+	private GameStatus gameStatus;
 	private ArrayList<Player> players;
 	private ArrayList<Prop> props;
 	private ArrayList<Lamp> lamps;
@@ -55,7 +50,7 @@ class Game implements Serializable
 		globalLight = 0.65d;
 		waitingTime = 0;
 		gameTime = 0;
-		gameStatus = GAME_STATUS_LOBBY;
+		gameStatus = GameStatus.LOBBY;
 		players = new ArrayList<>();
 		props = new ArrayList<>(); // reuse by Reset(), also set in GenerateMap()
 		lamps = new ArrayList<>();
@@ -125,7 +120,7 @@ class Game implements Serializable
 		Player newPlayer = new Player(newPlayerID, playerNickName, existingPlayers);
 		players.add(newPlayer);
 
-		if (gameStatus == GAME_STATUS_INTRO || gameStatus == GAME_STATUS_KILLING || gameStatus == GAME_STATUS_SUMMARY)
+		if (gameStatus == GameStatus.INTRO || gameStatus == GameStatus.KILLING || gameStatus == GameStatus.SUMMARY)
 			newPlayer.setPlayerType(Player.PLAYER_TYPE_GHOST);
 
 		return newPlayerID;
@@ -143,11 +138,11 @@ class Game implements Serializable
 		return rooms;
 	}
 
-	int getGameStatus() {
+	GameStatus getGameStatus() {
 		return gameStatus;
 	}
 
-	void setGameStatus(int gameStatus) {
+	void setGameStatus(GameStatus gameStatus) {
 		this.gameStatus = gameStatus;
 	}
 
@@ -174,7 +169,7 @@ class Game implements Serializable
 		// Now: Reset Map
 		waitingTime = (8 - players.size()) * 5;
 		gameTime = 0;
-		gameStatus = GAME_STATUS_LOBBY;
+		gameStatus = GameStatus.LOBBY;
 		lamps = new ArrayList<>();
 		chests = new ArrayList<>();
 		setGlobalLight(0.6d);

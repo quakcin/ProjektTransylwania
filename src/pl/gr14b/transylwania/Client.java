@@ -205,7 +205,7 @@ public class Client extends JFrame implements KeyListener
 				g.drawImage(aftop.filter(bfi, null), cx - 40, cy - 40, 80, 80, null);
 
 
-				if (clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY) {
+				if (clientGame.getGameStatus() == GameStatus.LOBBY) {
 					//g.setFont(new Font("Arial", Font.BOLD, 20));
 					g.setFont(stuff.getFont().deriveFont(20f));
 					g.setColor(new Color(255, 221, 0));
@@ -218,7 +218,7 @@ public class Client extends JFrame implements KeyListener
 				privateLight += (globalLight > privateLight) ? +LIGHT_DELTA : -LIGHT_DELTA;
 			g.drawImage(getImageWithOpacity(stuff.getLightMask(), privateLight), 0, 0, getBounds().width, getBounds().height, null);
 
-			if (clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY)
+			if (clientGame.getGameStatus() == GameStatus.LOBBY)
 			{
 				g.setFont(stuff.getFont().deriveFont(35f));
 				g.setColor(Color.WHITE);
@@ -228,7 +228,7 @@ public class Client extends JFrame implements KeyListener
 				if (clientGame.getWaitingTime() != 40)
 					g.drawString("" + clientGame.getWaitingTime() + "s", 50, getBounds().height - 50);
 			}
-			else if (clientGame.getGameStatus() == Game.GAME_STATUS_KILLING)
+			else if (clientGame.getGameStatus() == GameStatus.KILLING)
 			{
 				g.setFont(stuff.getFont().deriveFont(35f));
 				g.setColor(Color.WHITE);
@@ -255,7 +255,7 @@ public class Client extends JFrame implements KeyListener
 				g.drawImage(stuff.getHealth().get(clientGame.getPlayer().getHealth()), getBounds().width - 30 - 90,50, 90, 108,null);
 
 			// draw summary
-			if (clientGame.getGameStatus() == Game.GAME_STATUS_SUMMARY)
+			if (clientGame.getGameStatus() == GameStatus.SUMMARY)
 				g.drawImage(stuff.getSummary().get(clientGame.isWinnerFlag() ? 1 : 0), 0, 0, getWidth(), getHeight(), null);
 
 			if (--roleCallTime > 0 && clientGame.getPlayer().getPlayerType() != Player.PLAYER_TYPE_GHOST)
@@ -400,7 +400,7 @@ public class Client extends JFrame implements KeyListener
 							clientGame.getPlayer().setNextSoundInQue(null);
 						}
 
-						if (clientGame.getGameStatus() == Game.GAME_STATUS_KILLING && (tick % 25) == 0)
+						if (clientGame.getGameStatus() == GameStatus.KILLING && (tick % 25) == 0)
 							if (clientGame.getGameTime() > 0 && clientGame.getGameTime() <= 15)
 								Stuff.playSound("tick");
 					}
@@ -488,7 +488,7 @@ public class Client extends JFrame implements KeyListener
 					Object serverResponse = objectInputStream.readObject();
 
 					// Heuristics for known game changes
-					int oldGameStatus = clientGame.getGameStatus();
+					GameStatus oldGameStatus = clientGame.getGameStatus();
 
 					if (serverResponse instanceof Game)
 					{
@@ -527,7 +527,7 @@ public class Client extends JFrame implements KeyListener
 					{
 						FlagPacket packet = ((FlagPacket) serverResponse);
 						// See if anything has changed
-						if (clientGame.getWaitingTime() != packet.waitingTime && clientGame.getGameStatus() == Game.GAME_STATUS_LOBBY)
+						if (clientGame.getWaitingTime() != packet.waitingTime && clientGame.getGameStatus() == GameStatus.LOBBY)
 							Stuff.playSound("tick");
 
 						// Remember changes.
@@ -543,7 +543,7 @@ public class Client extends JFrame implements KeyListener
 
 
 					// More heuristics
-					if (clientGame.getGameStatus() != oldGameStatus && clientGame.getGameStatus() == Game.GAME_STATUS_KILLING)
+					if (clientGame.getGameStatus() != oldGameStatus && clientGame.getGameStatus() == GameStatus.KILLING)
 					{
 						// set role call display timer
 						roleCallTime = 25 * 4;

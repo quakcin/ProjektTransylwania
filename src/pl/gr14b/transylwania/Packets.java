@@ -3,30 +3,20 @@ package pl.gr14b.transylwania;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-abstract class Packets implements Serializable
-{
-}
+abstract class Packets implements Serializable {}
 
 class PlayersListPacket extends Packets implements Serializable
 {
 	private ArrayList<Player> players;
 
-	ArrayList<Player> getPlayers() {
-		return players;
-	}
-	PlayersListPacket(ArrayList<Player> players)
-	{
-		this.players = players;
-	}
+	ArrayList<Player> getPlayers() { return players; }
+	PlayersListPacket(ArrayList<Player> players) { this.players = players; }
 }
 
 class PropsPacket extends Packets implements Serializable
 {
 	private ArrayList<Prop> props;
-
-	ArrayList<Prop> getProps() {
-		return props;
-	}
+	ArrayList<Prop> getProps() { return props; }
 	PropsPacket(ArrayList<Prop> props)
 	{
 		this.props = props;
@@ -35,12 +25,20 @@ class PropsPacket extends Packets implements Serializable
 
 class FlagPacket extends Packets implements Serializable
 {
-	int gameStatus;
+	GameStatus gameStatus;
 	int waitingTime;
 	int gameTime;
 	int afkPenalty;
 	boolean isWinner;
-	FlagPacket (int gameStatus, int waitingTime, int gameTime, int afkPenalty, boolean isWinner)
+
+	FlagPacket
+	(
+		GameStatus gameStatus,
+		int waitingTime,
+		int gameTime,
+		int afkPenalty,
+		boolean isWinner
+	)
 	{
 		this.gameStatus = gameStatus;
 		this.waitingTime = waitingTime;
@@ -76,7 +74,6 @@ class ChestsListPacket extends Packets implements Serializable
 	{
 		this.chests = chests;
 	}
-
 	public ArrayList<Chest> getChests() {
 		return chests;
 	}
