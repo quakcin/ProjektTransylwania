@@ -7,11 +7,11 @@ enum GameStatus
 	LOBBY, INTRO, KILLING, SUMMARY
 }
 
-public class ServerGameStageHandler
+class ServerGameStageHandler
 {
 	// -- Game Status (Engine) flags
 
-	ArrayList<ServerGameStage> gameStages;
+	private ArrayList<ServerGameStage> gameStages;
 
 	ServerGameStageHandler (ServerBackgroundThread server)
 	{

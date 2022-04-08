@@ -2,11 +2,11 @@ package pl.gr14b.transylwania;
 
 import java.util.UUID;
 
-abstract public class ServerHandleRequest
+abstract class ServerHandleRequest
 {
-	public String className;
-	public Game serverGame;
-	public ServerHandler serverHandler;
+	private String className;
+	Game serverGame;
+	ServerHandler serverHandler;
 
 	ServerHandleRequest(String className, ServerHandler serverHandler)
 	{

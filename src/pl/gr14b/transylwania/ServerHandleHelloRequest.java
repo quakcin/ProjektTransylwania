@@ -2,13 +2,13 @@ package pl.gr14b.transylwania;
 
 import java.util.UUID;
 
-public class ServerHandleHelloRequest extends ServerHandleRequest
+class ServerHandleHelloRequest extends ServerHandleRequest
 {
 	ServerHandleHelloRequest(String className, ServerHandler serverHandler) {
 		super(className, serverHandler);
 	}
 
-	boolean tooManyPlayers ()
+	private boolean tooManyPlayers()
 	{
 		return serverGame.getPlayers().size() >= 8;
 	}

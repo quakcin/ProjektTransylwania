@@ -120,8 +120,12 @@ public class Menu extends JFrame
 		public void actionPerformed(ActionEvent actionEvent)
 		{
 			Locator locator = new Locator(networkData.getText());
-			new ClientCreateServer(locator.port);
+
+			// new ClientCreateServer(locator.port);
+			(new Server(locator.port)).start();
+
 			new Client(nickName.getText(), locator.ip, locator.port);
+
 			mainFrame.dispose();
 		}
 	}

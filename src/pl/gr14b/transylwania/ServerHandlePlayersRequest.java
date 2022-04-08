@@ -8,26 +8,6 @@ class ServerHandlePlayersRequest extends ServerHandleRequest
 		super(className, serverHandler);
 	}
 
-	boolean isForcingSynchronization ()
-	{
-		return !serverGame.getPlayer().isForcingSynchronization()
-				&& !serverGame.getPlayer().isForcingLocationSynchronization();
-	}
-
-	void copyOverPlayerLocationAndFlags (Player clientPlayer)
-	{
-		serverGame.getPlayer().copyLocation(clientPlayer);
-		serverGame.getPlayer().copyFlags(clientPlayer);
-	}
-
-	boolean requiresSynchronization (Player clientPlayer)
-	{
-		return !(
-				serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 100
-				&& !serverGame.getPlayer().isForcingLocationSynchronization()
-		);
-	}
-
 	@Override
 	void handleRequest(Object clientResponse, UUID playerID)
 	{
@@ -43,4 +23,25 @@ class ServerHandlePlayersRequest extends ServerHandleRequest
 		if (!requiresSynchronization(clientPlayer))
 			serverGame.getPlayer().copyLocation(clientPlayer);
 	}
+
+	private boolean isForcingSynchronization()
+	{
+		return !serverGame.getPlayer().isForcingSynchronization()
+				&& !serverGame.getPlayer().isForcingLocationSynchronization();
+	}
+
+	private void copyOverPlayerLocationAndFlags(Player clientPlayer)
+	{
+		serverGame.getPlayer().copyLocation(clientPlayer);
+		serverGame.getPlayer().copyFlags(clientPlayer);
+	}
+
+	private boolean requiresSynchronization(Player clientPlayer)
+	{
+		return !(
+				serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 100
+				&& !serverGame.getPlayer().isForcingLocationSynchronization()
+		);
+	}
+
 }

@@ -198,8 +198,8 @@ class Game implements Serializable
 	{
 		for (Player p : players)
 			if (p.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
-				return false;
-		return true;
+				return true;
+		return false;
 	}
 
 	Player getVamp ()

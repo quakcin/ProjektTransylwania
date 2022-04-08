@@ -20,26 +20,45 @@ class ServerHandler extends Thread
 
 	ServerHandler(Socket socket, Server server) throws Exception
 	{
-		socket.setTcpNoDelay(true);
 		this.socket = socket;
 		this.lock = server.getLock();
 		this.serverGame = server.getServerGame();
+		this.playerID = null;
 
+		createNetworkStreams(socket);
+		createCommunicationHandlers();
+	}
+
+	@Override
+	public void run ()
+	{
+		while (!socket.isClosed())
+		{
+			if (!isConnectedToAClient())
+				break;
+		}
+	}
+
+	private void createNetworkStreams (Socket socket) throws Exception
+	{
+		socket.setTcpNoDelay(true);
 		objOut = new ObjectOutputStream(socket.getOutputStream());
 		objIn = new ObjectInputStream(socket.getInputStream());
-		playerID = null;
+	}
 
+	private void createCommunicationHandlers ()
+	{
 		serverResponseHandler = new ServerResponseHandler(this);
 		serverRequestHandler = new ServerRequestHandler(this);
 	}
 
-	void handleDataExchange(Object clientResponse) throws Exception
+	private void handleDataExchange(Object clientResponse) throws Exception
 	{
 		serverRequestHandler.handleRequest(clientResponse, playerID);
 		serverResponseHandler.handleResponse();
 	}
 
-	void handlePlayerDisappearance ()
+	private void handlePlayerDisappearance()
 	{
 		System.out.printf("Player %s has disconnected!\n", playerID);
 
@@ -51,7 +70,7 @@ class ServerHandler extends Thread
 			}
 	}
 
-	boolean isConnectedToAClient ()
+	private boolean isConnectedToAClient()
 	{
 		try
 		{
@@ -72,20 +91,10 @@ class ServerHandler extends Thread
 		return true;
 	}
 
-	@Override
-	public void run ()
-	{
-		while (!socket.isClosed())
-		{
-			if (!isConnectedToAClient())
-				break;
-		}
-	}
-
 	ObjectOutputStream getObjOut () { return this.objOut; }
 	ObjectInputStream getObjIn () { return this.objIn; }
 	Game getServerGame () { return this.serverGame; }
-	UUID getPlayerID () { return this.playerID; };
+	UUID getPlayerID () { return this.playerID; }
 	void setPlayerID (UUID playerID) { this.playerID = playerID; }
 
 }

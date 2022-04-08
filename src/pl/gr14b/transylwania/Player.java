@@ -215,6 +215,12 @@ class Player implements Serializable {
 		return spacePressed;
 	}
 
+	boolean isNotGhostAndHasSpacePressed()
+	{
+		return getPlayerType() != Player.PLAYER_TYPE_GHOST
+				&& isSpacePressed();
+	}
+
 	void setSpacePressedDisabled(int delay) {
 		spacePressed = false;
 		spacedPressedEnabled = delay;
