@@ -41,8 +41,8 @@ public class ServerCollisionPreventingMechanism
 
 	private boolean isOneOfPlayersGhost(Player player, Player otherPlayer)
 	{
-		return player.getPlayerType() == Player.PLAYER_TYPE_GHOST
-				|| otherPlayer.getPlayerType() == Player.PLAYER_TYPE_GHOST;
+		return player.getPlayerType().equals(PlayerType.GHOST)
+				|| otherPlayer.getPlayerType().equals(PlayerType.GHOST);
 	}
 
 	private boolean isOneOfPlayersHidden(Player player, Player otherPlayer)
@@ -82,7 +82,7 @@ public class ServerCollisionPreventingMechanism
 	private void preventMapCollisions()
 	{
 		for (Player p : game.getPlayers())
-			if (p.getPlayerType() == Player.PLAYER_TYPE_GHOST)
+			if (p.getPlayerType().equals(PlayerType.GHOST))
 				if (p.getDist(game.MAP_SIZE * 405, game.MAP_SIZE * 405) > (game.MAP_SIZE + 1) * 405)
 					p.teleportToSpawn(game.getPlayers());
 	}

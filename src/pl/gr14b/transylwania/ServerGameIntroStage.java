@@ -29,7 +29,7 @@ class ServerGameIntroStage extends ServerGameStage
 	private void chooseVampire()
 	{
 		Player vamp = getRandomPlayer();
-		vamp.setPlayerType(Player.PLAYER_TYPE_VAMPIRE);
+		vamp.setPlayerType(PlayerType.VAMPIRE);
 		vamp.setForcingSynchronization(true);
 	}
 

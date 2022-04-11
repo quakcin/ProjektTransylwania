@@ -121,7 +121,7 @@ class Game implements Serializable
 		players.add(newPlayer);
 
 		if (gameStatus == GameStatus.INTRO || gameStatus == GameStatus.KILLING || gameStatus == GameStatus.SUMMARY)
-			newPlayer.setPlayerType(Player.PLAYER_TYPE_GHOST);
+			newPlayer.setPlayerType(PlayerType.GHOST);
 
 		return newPlayerID;
 	}
@@ -189,7 +189,7 @@ class Game implements Serializable
 	{
 		int count = 0;
 		for (Player p : players)
-			if (p.getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
+			if (p.getPlayerType().equals(PlayerType.SURVIVOR))
 				count += 1;
 		return count;
 	}
@@ -197,7 +197,7 @@ class Game implements Serializable
 	boolean isVampireConnected ()
 	{
 		for (Player p : players)
-			if (p.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
+			if (p.getPlayerType().equals(PlayerType.VAMPIRE))
 				return true;
 		return false;
 	}
@@ -205,7 +205,7 @@ class Game implements Serializable
 	Player getVamp ()
 	{
 		for (Player p : players)
-			if (p.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE)
+			if (p.getPlayerType().equals(PlayerType.VAMPIRE))
 				return p;
 		return null;
 	}
@@ -216,7 +216,7 @@ class Game implements Serializable
 
 		for (Player p : players)
 			if (p != player)
-				if (p.getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
+				if (p.getPlayerType().equals(PlayerType.SURVIVOR))
 					if (nearest == null)
 						nearest = p;
 					else

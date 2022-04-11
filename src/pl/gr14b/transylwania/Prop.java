@@ -167,7 +167,7 @@ class Lamp extends Prop implements Serializable
 	void UseLamp (Player player, Game serverGame)
 	{
 		boolean isEvent = false;
-		if (player.getPlayerType() == Player.PLAYER_TYPE_VAMPIRE) // FIXME: .Make it more functional.
+		if (player.getPlayerType().equals(PlayerType.VAMPIRE)) // FIXME: .Make it more functional.
 		{
 			if (status == Lamp.LAMP_ENABLED) {
 				status = Lamp.LAMP_BROKEN;
@@ -176,7 +176,7 @@ class Lamp extends Prop implements Serializable
 				serverGame.playSoundNear(getX(), getY(), 1000, "lightDown");
 			}
 		}
-		else if (player.getPlayerType() == Player.PLAYER_TYPE_SURVIVOR)
+		else if (player.getPlayerType().equals(PlayerType.SURVIVOR))
 		{
 			if (status == Lamp.LAMP_DISABLED) {
 				status = Lamp.LAMP_ENABLED;

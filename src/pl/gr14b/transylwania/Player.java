@@ -1,15 +1,22 @@
 package pl.gr14b.transylwania;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.UUID;
 
 
+enum PlayerType
+{
+	SURVIVOR, VAMPIRE, GHOST
+}
+
 class Player implements Serializable {
 	// Flags and stuff
-	static final int PLAYER_TYPE_SURVIVOR = 0;
-	static final int PLAYER_TYPE_VAMPIRE = 1;
-	static final int PLAYER_TYPE_GHOST = 2;
 
 	private static final int PLAYER_MODELS_COUNT = 8;
 
@@ -29,7 +36,7 @@ class Player implements Serializable {
 	private int character;
 	private int afkPenalty;
 
-	private int playerType;
+	private PlayerType playerType;
 	private int health;
 	private int nextPacket;
 	private String nextSoundInQue;
@@ -38,7 +45,7 @@ class Player implements Serializable {
 		// This is ALWAYS default
 		this.forcingSynchronization = false;
 		this.nickName = playerNickName;
-		this.playerType = PLAYER_TYPE_SURVIVOR;
+		this.playerType = PlayerType.SURVIVOR;
 		this.playerID = playerID;
 		this.health = 3;
 		this.nextPacket = 0;
@@ -84,7 +91,7 @@ class Player implements Serializable {
 			return;
 
 		pushAttempts = 0;
-		RecursivePush(playerType == Player.PLAYER_TYPE_VAMPIRE ? speed * 1.2 : speed, clientGame);
+		RecursivePush(playerType.equals(PlayerType.VAMPIRE)? speed * 1.2 : speed, clientGame);
 	}
 
 	private void RecursivePush(double speed, Game clientGame) {
@@ -93,7 +100,7 @@ class Player implements Serializable {
 		double vx = getX() + -1 * Math.cos(ang) * speed;
 		double vy = getY() + -1 * Math.sin(ang) * speed;
 
-		if (playerType == PLAYER_TYPE_GHOST) {
+		if (playerType.equals(PlayerType.GHOST)) {
 			x = vx;
 			y = vy;
 			return;
@@ -140,7 +147,7 @@ class Player implements Serializable {
 			}
 
 		for (Player p : clientGame.getPlayers())
-			if (p.getPlayerID() != getPlayerID() && p.getPlayerType() != PLAYER_TYPE_GHOST)
+			if (p.getPlayerID() != getPlayerID() && !p.getPlayerType().equals(PlayerType.GHOST))
 				if (!Chest.isPlayerHidden(clientGame.getChests(), p.getPlayerID()))
 					if (Math.sqrt(Math.pow(vx - p.getX(), 2) + Math.pow(vy - p.getY(), 2)) < 50) {
 						allow = false;
@@ -203,11 +210,11 @@ class Player implements Serializable {
 		while (distanceToNearestPlayer(allPlayers) < 90);
 	}
 
-	int getPlayerType() {
+	PlayerType getPlayerType() {
 		return playerType;
 	}
 
-	void setPlayerType(int playerType) {
+	void setPlayerType(PlayerType playerType) {
 		this.playerType = playerType;
 	}
 
@@ -217,7 +224,7 @@ class Player implements Serializable {
 
 	boolean isNotGhostAndHasSpacePressed()
 	{
-		return getPlayerType() != Player.PLAYER_TYPE_GHOST
+		return !getPlayerType().equals(PlayerType.GHOST)
 				&& isSpacePressed();
 	}
 
@@ -251,7 +258,7 @@ class Player implements Serializable {
 		this.forcingSynchronization = true;
 		this.spacePressed = false;
 		this.health = 3;
-		playerType = PLAYER_TYPE_SURVIVOR;
+		playerType = PlayerType.SURVIVOR;
 		teleportToSpawn(allPlayers);
 	}
 
@@ -310,7 +317,7 @@ class Player implements Serializable {
 
 		// Check if player died
 		if (getHealth() <= 0) {
-			setPlayerType(Player.PLAYER_TYPE_GHOST);
+			setPlayerType(PlayerType.GHOST);
 			serverGame.getProps().add(new DeadBody(
 					(int) getX() + Stuff.random(15, 90), (int) getY() + Stuff.random(15, 90)
 			));
@@ -344,6 +351,59 @@ class Player implements Serializable {
 		if (this.nextPacket > 14)
 			this.nextPacket = 1;
 	}
+
+
+
+
+	void drawPlayer (GraphicsPainter graphicsPainter)
+	{
+		int cx = graphicsPainter.getOffX() + (int) (graphicsPainter.getPlayer().getX() - getX());
+		int cy = graphicsPainter.getOffY() + (int) (graphicsPainter.getPlayer().getY() - getY());
+
+		ImageIcon pfp = null;
+
+		if (getPlayerType().equals(PlayerType.SURVIVOR))
+			pfp = isPlayerMoving() ? graphicsPainter.getStuff().getSurvivorsWalking().get(getCharacter()) : graphicsPainter.getStuff().getSurvivorsStanding().get(getCharacter());
+		else if (getPlayerType().equals(PlayerType.GHOST))
+			pfp = graphicsPainter.getStuff().getGhost();
+		else if (getPlayerType().equals(PlayerType.VAMPIRE))
+			if (isSpacePressed())
+				pfp = graphicsPainter.getStuff().getVampAttacking();
+			else if (isPlayerMoving())
+				pfp = graphicsPainter.getStuff().getVampWalking();
+			else
+				pfp = graphicsPainter.getStuff().getVampStanding();
+
+		assert pfp != null;
+		AffineTransform aft = AffineTransform.getRotateInstance(getAng() + 1.57075, pfp.getIconWidth() >> 1, pfp.getIconHeight() >> 1);
+		AffineTransformOp aftop = new AffineTransformOp(aft, AffineTransformOp.TYPE_BILINEAR);
+
+		BufferedImage bfi = new BufferedImage(pfp.getIconWidth(), pfp.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics bfig = bfi.createGraphics();
+		pfp.paintIcon(null, bfig, 0, 0);
+
+		graphicsPainter.getG().drawImage(aftop.filter(bfi, null), cx - 40, cy - 40, 80, 80, null);
+
+
+		if (graphicsPainter.clientGame.getGameStatus() == GameStatus.LOBBY) {
+			//g.setFont(new Font("Arial", Font.BOLD, 20));
+			graphicsPainter.getG().setFont(graphicsPainter.getStuff().getFont().deriveFont(20f));
+			graphicsPainter.getG().setColor(new Color(255, 221, 0));
+			graphicsPainter.getG().drawString(getNickName(), (int) (cx - (getNickName().length() * 5.5)), cy - 45);
+		}
+	}
+
+
+	void playStepSound ()
+	{
+		if (getPlayerType().equals(PlayerType.SURVIVOR))
+			Stuff.playSound("survStep");
+		else if (getPlayerType().equals(PlayerType.VAMPIRE))
+			Stuff.playSound("vampStep");
+		else if (getPlayerType().equals(PlayerType.GHOST))
+			Stuff.playSound("ghostStep");
+	}
+
 
 	boolean isPlayerMoving() {
 		return playerMoving;
