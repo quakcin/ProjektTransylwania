@@ -12,8 +12,6 @@ class PaintHUD extends GraphicsPainter
 
 	private boolean isChangeInLightnessSerious()
 	{
-		System.out.println("GLOB: " + client.getGlobalLight());
-		System.out.println("PRIV: " + client.getPrivateLight());
 		return Math.abs(client.getPrivateLight() - client.getGlobalLight()) > 0.1d;
 	}
 

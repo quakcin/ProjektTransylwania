@@ -143,8 +143,10 @@ class ServerGameKillingStage extends ServerGameStage
 		if (game.countSurvivors() <= 0)
 			game.setWinnerFlag(Game.WINNER_VAMP);
 
-		if (game.isVampireConnected() || server.isOverTime())
+		if (!game.isVampireConnected() || server.isOverTime())
 			game.setWinnerFlag(Game.WINNER_SURVIVOR);
+
+
 	}
 
 }
