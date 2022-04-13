@@ -34,7 +34,7 @@ class ClientGameThrottleAnimationsComponent extends ClientGameComponent
 		if (isPlayerOnTheirSoundTick(p))
 			p.playStepSound();
 
-		p.Push(16.3, clientGame);
+		p.push(16.3, clientGame);
 	}
 
 }

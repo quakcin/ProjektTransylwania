@@ -13,44 +13,9 @@ import java.util.ArrayList;
 
 class Stuff
 {
-	// Graphics
-	private ArrayList<ImageIcon> survivorsWalking;
-	private ArrayList<ImageIcon> survivorsStanding;
-	private ArrayList<ImageIcon> bloodSplashes;
-	private ArrayList<ImageIcon> deadBodies;
-	private ArrayList<ImageIcon> lamps;
-
-	private ArrayList<Image> rooms;
-	private ArrayList<Image> health;
-	private ArrayList<Image> summary;
-	private ArrayList<Image> pType;
-	private BufferedImage lightMask;
-	private BufferedImage doorTexture;
-	private BufferedImage background;
-	private ImageIcon ghost;
-	private ImageIcon vampWalking;
-	private ImageIcon vampStanding;
-	private ImageIcon vampAttacking;
-	private ImageIcon chest;
-
-	private BufferedImage arrow;
-	private Font font;
-
-
-
-	static int random (int mm, int mx)
-	{
-		return (int) Math.round(Math.random() * (mx - mm - 1)) + mm;
-	}
-
-	static int RandomBloodSplash ()
-	{
-		return random(0, 4);
-	}
-	static int RandomDeadBody ()
-	{
-		return random(0, 3);
-	}
+	private PlayerStuff playerStuff;
+	private MiscStuff miscStuff;
+	private MapStuff mapStuff;
 
 	static void playSound (String name)
 	{
@@ -65,208 +30,151 @@ class Stuff
 		}
 	}
 
-
-	Stuff()
+	Stuff () throws Exception
 	{
-		survivorsWalking = new ArrayList<>();
-		survivorsStanding = new ArrayList<>();
-		deadBodies = new ArrayList<>();
-		bloodSplashes = new ArrayList<>();
-		lamps = new ArrayList<>();
-
-		rooms = new ArrayList<>();
-		health = new ArrayList<>();
-
-		survivorsWalking = LoadImageIcons("Stuff/survivor-%d.gif");
-		survivorsStanding = LoadImageIcons("Stuff/search-%d.gif");
-		deadBodies = LoadImageIcons("Stuff/body-%d.png");
-		bloodSplashes = LoadImageIcons("Stuff/blood-%d.png");
-		lamps = LoadImageIcons("Stuff/lamp-%d.gif");
-
-		rooms = LoadImage("Stuff/room-%d.png");
-		health = LoadImage("Stuff/hp-%d.png");
-		summary = LoadImage("Stuff/summary-%d.png");
-		pType = LoadImage("Stuff/ptype-%d.png");
-
-		try {
-			arrow = ImageIO.read(new File("Stuff/arrow.png"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			lightMask = ImageIO.read(new File("Stuff/lightmask.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			background = ImageIO.read(new File("Stuff/background.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			doorTexture = ImageIO.read(new File("Stuff/door.png"));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		try {
-			ghost = new ImageIcon(new File("Stuff/ghost.gif").getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			vampWalking = new ImageIcon(new File("Stuff/vamp.gif").getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			vampStanding = new ImageIcon(new File("Stuff/vampStanding.gif").getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			vampAttacking = new ImageIcon(new File("Stuff/vampAttacking.gif").getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			chest = new ImageIcon(new File("Stuff/chest.png").getAbsolutePath());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		try {
-			font = Font.createFont(Font.TRUETYPE_FONT, new File("Stuff/PermanentMarker-Regular.ttf"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		playerStuff = new PlayerStuff();
+		miscStuff = new MiscStuff();
+		mapStuff = new MapStuff();
 	}
 
+	static Font loadFont (String path) throws Exception
+	{
+		return
+				Font.createFont(Font.TRUETYPE_FONT, new File(path));
+	}
 
-	private ArrayList<ImageIcon> LoadImageIcons (String path)
+	static BufferedImage loadBufferedImage (String path) throws Exception
+	{
+		return
+				ImageIO.read(new File(path));
+	}
+
+	static ArrayList<ImageIcon> loadImageIconsFromFormattedPath (String path)
 	{
 		ArrayList<ImageIcon> icons = new ArrayList<>();
 		for (int i = 0; i < 0xFF; i++)
 		{
 			File fd = new File(String.format(path, i));
-			if (fd.exists() && !fd.isDirectory()) {
-				System.out.printf("Loaded ImageIcon: %s\n", fd.getAbsolutePath());
-				icons.add(new ImageIcon(fd.getAbsolutePath()));
-			}
-			else
-			{
-				System.out.printf("Splash does not exists: %s\n", fd.getAbsolutePath());
+			if (!(fd.exists() && !fd.isDirectory()))
 				break;
-			}
+			icons.add(new ImageIcon(fd.getAbsolutePath()));
 		}
 		return icons;
 	}
 
-	private ArrayList<Image> LoadImage (String path)
+	static ArrayList<Image> loadImagesFromFormattedPath (String path) throws Exception
 	{
 		ArrayList<Image> icons = new ArrayList<>();
 		for (int i = 0; i < 0xFF; i++)
 		{
 			File fd = new File(String.format(path, i));
-			if (fd.exists() && !fd.isDirectory()) {
-				System.out.printf("Loaded Image: %s\n", fd.getAbsolutePath());
-				try {
-					icons.add(ImageIO.read(fd));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			else
-			{
-				System.out.printf("Splash does not exists: %s\n", fd.getAbsolutePath());
+			if (!(fd.exists() && !fd.isDirectory()))
 				break;
-			}
+			icons.add(ImageIO.read(fd));
 		}
 		return icons;
 	}
 
-
-	BufferedImage getLightMask() {
-		return lightMask;
+	static ImageIcon loadGIF(String path) throws Exception
+	{
+			return
+					new ImageIcon(new File(path).getAbsolutePath());
 	}
 
-	ArrayList<Image> getRooms() {
-		return rooms;
+	BufferedImage getLightMask()
+	{
+		return miscStuff.getLightMask();
 	}
 
-	BufferedImage getDoorTexture() {
-		return doorTexture;
+	ArrayList<Image> getRooms()
+	{
+		return mapStuff.getRooms();
 	}
 
-	BufferedImage getBackground() {
-		return background;
+	BufferedImage getDoorTexture()
+	{
+		return mapStuff.getDoorTexture();
 	}
 
-	Font getFont() {
-		return font;
+	BufferedImage getBackground()
+	{
+		return miscStuff.getBackground();
 	}
 
-	ImageIcon getGhost() {
-		return ghost;
+	Font getFont()
+	{
+		return miscStuff.getFont();
 	}
 
-	ArrayList<Image> getHealth() {
-		return health;
+	ImageIcon getGhost()
+	{
+		return playerStuff.getGhost();
 	}
 
-	ArrayList<ImageIcon> getDeadBodies() {
-		return deadBodies;
+	ArrayList<Image> getHealth()
+	{
+		return miscStuff.getHealth();
 	}
 
-
-	ArrayList<ImageIcon> getBloodSplashes() {
-		return bloodSplashes;
-	}
-
-	ArrayList<ImageIcon> getLamps() {
-		return lamps;
-	}
-
-	BufferedImage getArrow() {
-		return arrow;
+	ArrayList<ImageIcon> getDeadBodies()
+	{
+		return mapStuff.getDeadBodies();
 	}
 
 
-	ArrayList<ImageIcon> getSurvivorsWalking() {
-		return survivorsWalking;
+	ArrayList<ImageIcon> getBloodSplashes()
+	{
+		return mapStuff.getBloodSplashes();
 	}
 
-	ArrayList<ImageIcon> getSurvivorsStanding() {
-		return survivorsStanding;
+	ArrayList<ImageIcon> getLamps()
+	{
+		return mapStuff.getLamps();
 	}
 
-	ImageIcon getVampWalking() {
-		return vampWalking;
+	BufferedImage getArrow()
+	{
+		return miscStuff.getArrow();
 	}
 
-	ImageIcon getVampStanding() {
-		return vampStanding;
+
+	ArrayList<ImageIcon> getSurvivorsWalking()
+	{
+		return playerStuff.getSurvivorsWalking();
 	}
 
-	ImageIcon getVampAttacking() {
-		return vampAttacking;
+	ArrayList<ImageIcon> getSurvivorsStanding()
+	{
+		return playerStuff.getSurvivorsStanding();
 	}
 
-	ArrayList<Image> getSummary() {
-		return summary;
+	ImageIcon getVampWalking()
+	{
+		return playerStuff.getVampWalking();
 	}
 
-	ArrayList<Image> getpType() {
-		return pType;
+	ImageIcon getVampStanding()
+	{
+		return playerStuff.getVampStanding();
 	}
 
-	public ImageIcon getChest() {
-		return chest;
+	ImageIcon getVampAttacking()
+	{
+		return playerStuff.getVampAttacking();
+	}
+
+	ArrayList<Image> getSummary()
+	{
+		return miscStuff.getSummary();
+	}
+
+	ArrayList<Image> getPType()
+	{
+		return miscStuff.getPType();
+	}
+
+	public ImageIcon getChest()
+	{
+		return mapStuff.getChest();
 	}
 }

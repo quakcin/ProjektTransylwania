@@ -119,7 +119,7 @@ public class ClientConnectionHandler extends Thread
 	{
 		client.getClientGame().getPlayer().setForcingSynchronization(false);
 		client.getClientGame().getPlayer().setForcingLocationSynchronization(false);
-		client.getClientGame().getPlayer().NextPacket();
+		client.getClientGame().getPlayer().nextPacket();
 	}
 
 	private void handlePackets () throws Exception

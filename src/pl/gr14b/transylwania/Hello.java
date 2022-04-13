@@ -2,7 +2,7 @@ package pl.gr14b.transylwania;
 
 import java.io.Serializable;
 
-// Player greeting object kinda stuff
+
 class Hello implements Serializable
 {
 	private String nickName;
@@ -12,8 +12,8 @@ class Hello implements Serializable
 		nickName = playerNickName;
 	}
 
-	String getNickName() {
+	String getNickName()
+	{
 		return nickName;
 	}
-
 }

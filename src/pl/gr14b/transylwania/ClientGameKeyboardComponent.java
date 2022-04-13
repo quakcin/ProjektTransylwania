@@ -1,6 +1,6 @@
 package pl.gr14b.transylwania;
 
-public class ClientGameKeyboardComponent extends ClientGameComponent
+class ClientGameKeyboardComponent extends ClientGameComponent
 {
 	ClientGameKeyboardComponent(Client client) {
 		super(client);
@@ -18,15 +18,15 @@ public class ClientGameKeyboardComponent extends ClientGameComponent
 	{
 		if (keyboardState['w'])
 		{
-			clientGame.getPlayer().Push(16.3, clientGame);
+			clientGame.getPlayer().push(16.3, clientGame);
 			clientGame.getPlayer().setPlayerMoving(true);
 		}
 		if (keyboardState['s'])
-			clientGame.getPlayer().Push(-12, clientGame);
+			clientGame.getPlayer().push(-12, clientGame);
 		if (keyboardState['a'])
-			clientGame.getPlayer().Turn(-10);
+			clientGame.getPlayer().turn(-10);
 		if (keyboardState['d'])
-			clientGame.getPlayer().Turn(10);
+			clientGame.getPlayer().turn(10);
 		if (keyboardState[' '])
 			clientGame.getPlayer().setSpacePressedEnabled();
 	}

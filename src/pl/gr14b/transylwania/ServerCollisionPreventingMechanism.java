@@ -65,8 +65,8 @@ public class ServerCollisionPreventingMechanism
 		player.setAng(otherPlayerAngle);
 		otherPlayer.setAng(playerAngle);
 
-		player.Push(90, game);
-		otherPlayer.Push(90, game);
+		player.push(90, game);
+		otherPlayer.push(90, game);
 
 		player.setAng(playerAngle);
 		otherPlayer.setAng(otherPlayerAngle);
@@ -83,7 +83,7 @@ public class ServerCollisionPreventingMechanism
 	{
 		for (Player p : game.getPlayers())
 			if (p.getPlayerType().equals(PlayerType.GHOST))
-				if (p.getDist(game.MAP_SIZE * 405, game.MAP_SIZE * 405) > (game.MAP_SIZE + 1) * 405)
+				if (p.getDist(Constants.MAP_SIZE * 405, Constants.MAP_SIZE * 405) > (Constants.MAP_SIZE + 1) * 405)
 					p.teleportToSpawn(game.getPlayers());
 	}
 

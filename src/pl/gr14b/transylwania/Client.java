@@ -21,7 +21,7 @@ public class Client extends JFrame implements KeyListener
 	private String ipAddress;
 	private int port;
 
-	Client (String nick, String ip, int port)
+	Client (String nick, String ip, int port) throws Exception
 	{
 		super();
 

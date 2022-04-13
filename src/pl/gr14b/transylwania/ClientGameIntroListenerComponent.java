@@ -1,10 +1,23 @@
 package pl.gr14b.transylwania;
 
-public class ClientGameIntroListenerComponent extends ClientGameComponent
+class ClientGameIntroListenerComponent extends ClientGameComponent
 {
-	GameStatus oldGameStatus;
-	ClientGameIntroListenerComponent(Client client) {
+	private GameStatus oldGameStatus;
+
+	ClientGameIntroListenerComponent (Client client)
+	{
 		super(client);
+	}
+
+	private boolean isRoleCall()
+	{
+		return !oldGameStatus.equals(clientGame.getGameStatus())
+				&& clientGame.getGameStatus().equals(GameStatus.KILLING);
+	}
+
+	private boolean isMainPlayerAVampire()
+	{
+		return clientGame.getPlayer().getPlayerType().equals(PlayerType.VAMPIRE);
 	}
 
 	@Override
@@ -13,16 +26,25 @@ public class ClientGameIntroListenerComponent extends ClientGameComponent
 		if (oldGameStatus == null)
 			oldGameStatus = clientGame.getGameStatus();
 
-		if (!oldGameStatus.equals(clientGame.getGameStatus()) && clientGame.getGameStatus().equals(GameStatus.KILLING))
-		{
-			client.setRoleCallTime(25 * 4);
-			client.setGlobalLight(0.75d);
-			if (clientGame.getPlayer().getPlayerType().equals(PlayerType.VAMPIRE))
-				Stuff.playSound("vamp-theme");
-			else
-				Stuff.playSound("surv-theme");
-		}
+		if (isRoleCall())
+			beginRoleCallPhase();
 
 		oldGameStatus = clientGame.getGameStatus();
+	}
+
+	private void beginRoleCallPhase()
+	{
+		setRoleCallFlags();
+
+		if (isMainPlayerAVampire())
+			Stuff.playSound("vamp-theme");
+		else
+			Stuff.playSound("surv-theme");
+	}
+
+	private void setRoleCallFlags()
+	{
+		client.setRoleCallTime(25 * 4);
+		client.setGlobalLight(0.75d);
 	}
 }

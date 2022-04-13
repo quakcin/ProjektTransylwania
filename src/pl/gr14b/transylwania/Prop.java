@@ -51,7 +51,7 @@ class Blood extends Prop implements Serializable
 {
 
 	Blood(int x, int y) {
-		super(x, y, Stuff.RandomBloodSplash());
+		super(x, y, Constants.random(0, 4));
 	}
 
 	@Override
@@ -67,7 +67,7 @@ class DeadBody extends Prop implements Serializable
 {
 
 	DeadBody(int x, int y) {
-		super(x, y, Stuff.RandomDeadBody());
+		super(x, y, Constants.random(0, 3));
 	}
 
 	@Override
@@ -171,7 +171,7 @@ class Lamp extends Prop implements Serializable
 		{
 			if (status == Lamp.LAMP_ENABLED) {
 				status = Lamp.LAMP_BROKEN;
-				serverGame.setGameTime(serverGame.getGameTime() + Game.LAMP_PENALTY);
+				serverGame.setGameTime(serverGame.getGameTime() + Constants.LAMP_PENALTY);
 				isEvent = true;
 				serverGame.playSoundNear(getX(), getY(), 1000, "lightDown");
 			}
@@ -180,7 +180,7 @@ class Lamp extends Prop implements Serializable
 		{
 			if (status == Lamp.LAMP_DISABLED) {
 				status = Lamp.LAMP_ENABLED;
-				serverGame.setGameTime(serverGame.getGameTime() - Game.LAMP_BONUS);
+				serverGame.setGameTime(serverGame.getGameTime() - Constants.LAMP_BONUS);
 				isEvent = true;
 				serverGame.playSoundNear(getX(), getY(), 1000, "lightUp");
 			}
@@ -188,7 +188,7 @@ class Lamp extends Prop implements Serializable
 
 		if (isEvent)
 		{
-			player.Face(getX() - 20, getY() - 20);
+			player.face(getX() - 20, getY() - 20);
 			player.setSpacePressedDisabled(25);
 			player.setForcingSynchronization(true);
 		}

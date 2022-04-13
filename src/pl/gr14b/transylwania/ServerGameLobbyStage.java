@@ -85,7 +85,7 @@ class ServerGameLobbyStage extends ServerGameStage
 			if (p.isSpacePressed())
 			{
 				p.randomizeCharacter();
-				p.setSpacePressedDisabled(Game.LOBBY_CHANGE_PLAYER_MODEL__DELAY);
+				p.setSpacePressedDisabled(Constants.LOBBY_CHANGE_PLAYER_MODEL__DELAY);
 			}
 	}
 

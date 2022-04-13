@@ -10,7 +10,7 @@ class ServerGameSummaryStage extends ServerGameStage
 	void UpdateStage()
 	{
 		if (isOverSummary())
-			game.Reset();
+			game.resetGameServerWise();
 	}
 
 	private boolean isOverSummary()

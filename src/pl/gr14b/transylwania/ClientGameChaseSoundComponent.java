@@ -5,7 +5,8 @@ class ClientGameChaseSoundComponent extends ClientGameComponent
 
 	private long chaseSongPlayTime;
 
-	ClientGameChaseSoundComponent(Client client) {
+	ClientGameChaseSoundComponent(Client client)
+	{
 		super(client);
 		chaseSongPlayTime = 0;
 	}

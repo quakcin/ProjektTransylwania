@@ -74,15 +74,15 @@ class ServerGameKillingStage extends ServerGameStage
 	private void vampSuccessfulAttack(Player vamp, Player prey)
 	{
 		prey.Damage(game);
-		vamp.FacePlayer(prey);
-		vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_DELAY);
+		vamp.facePlayer(prey);
+		vamp.setSpacePressedDisabled(Constants.VAMP_ATTACK_DELAY);
 	}
 
 	private void vampFailedAttack(Player vamp, Player prey)
 	{
 		game.playSoundNear(vamp.getX(), vamp.getY(), 810 * 2, "vampMiss");
-		vamp.setSpacePressedDisabled(Game.VAMP_ATTACK_MISS_DELAY);
-		vamp.FacePlayer(prey);
+		vamp.setSpacePressedDisabled(Constants.VAMP_ATTACK_MISS_DELAY);
+		vamp.facePlayer(prey);
 	}
 
 
@@ -141,10 +141,10 @@ class ServerGameKillingStage extends ServerGameStage
 	private void setWinnerFlag()
 	{
 		if (game.countSurvivors() <= 0)
-			game.setWinnerFlag(Game.WINNER_VAMP);
+			game.setWinnerFlag(Constants.WINNER_VAMP);
 
 		if (!game.isVampireConnected() || server.isOverTime())
-			game.setWinnerFlag(Game.WINNER_SURVIVOR);
+			game.setWinnerFlag(Constants.WINNER_SURVIVOR);
 
 
 	}

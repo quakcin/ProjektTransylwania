@@ -101,7 +101,7 @@ class PaintHUD extends GraphicsPainter
 		client.setRoleCallTime(client.getRoleCallTime() - 1);
 
 		if (client.getRoleCallTime() > 0 && !clientGame.getPlayer().getPlayerType().equals(PlayerType.GHOST))
-			g.drawImage(stuff.getpType().get(clientGame.getPlayer().getPlayerType().equals(PlayerType.SURVIVOR) ? 1 : 0), 0, 0, width, height, null);
+			g.drawImage(stuff.getPType().get(clientGame.getPlayer().getPlayerType().equals(PlayerType.SURVIVOR) ? 1 : 0), 0, 0, width, height, null);
 	}
 
 	private void paintStageSpecificOverlay()

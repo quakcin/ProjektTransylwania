@@ -35,10 +35,10 @@ public class PaintMap extends GraphicsPainter
 
 	void paintVerticalDoors()
 	{
-		for (int y = 0; y < clientGame.MAP_SIZE; y++)
-			for (int x = 0; x < clientGame.MAP_SIZE + 1; x++)
+		for (int y = 0; y < Constants.MAP_SIZE; y++)
+			for (int x = 0; x < Constants.MAP_SIZE + 1; x++)
 			{
-				int index = x * (clientGame.MAP_SIZE) + y;
+				int index = x * (Constants.MAP_SIZE) + y;
 
 				if (clientGame.getVerticalDoors()[index])
 				{
@@ -52,10 +52,10 @@ public class PaintMap extends GraphicsPainter
 
 	void paintHorizontalDoors()
 	{
-		for (int y = 0; y < clientGame.MAP_SIZE + 1; y++)
-			for (int x = 0; x < clientGame.MAP_SIZE; x++)
+		for (int y = 0; y < Constants.MAP_SIZE + 1; y++)
+			for (int x = 0; x < Constants.MAP_SIZE; x++)
 			{
-				int index = y * (clientGame.MAP_SIZE) + x;
+				int index = y * (Constants.MAP_SIZE) + x;
 
 				if (clientGame.getHorizontalDoors()[index])
 				{

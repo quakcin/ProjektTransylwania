@@ -124,7 +124,11 @@ public class Menu extends JFrame
 			// new ClientCreateServer(locator.port);
 			(new Server(locator.port)).start();
 
-			new Client(nickName.getText(), locator.ip, locator.port);
+			try {
+				new Client(nickName.getText(), locator.ip, locator.port);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 			mainFrame.dispose();
 		}
@@ -139,7 +143,11 @@ public class Menu extends JFrame
 			Locator locator = new Locator(networkData.getText());
 
 			System.out.println("Joining " + locator.ip + " on the port " + locator.port + " as " + nick);
-			new Client(nick, locator.ip, locator.port);
+			try {
+				new Client(nick, locator.ip, locator.port);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			mainFrame.dispose();
 		}
 	}
