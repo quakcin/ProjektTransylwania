@@ -5,17 +5,17 @@ import java.util.ArrayList;
 
 class LampsListPacket extends Packets implements Serializable
 {
-	private ArrayList<Lamp> lamps;
+	private ArrayList<LampProp> lampProps;
 	private double globalLight;
 
-	ArrayList<Lamp> getLamps()
+	ArrayList<LampProp> getLampProps()
 	{
-		return lamps;
+		return lampProps;
 	}
 
-	LampsListPacket (ArrayList<Lamp> lamps, double globalLight)
+	LampsListPacket (ArrayList<LampProp> lampProps, double globalLight)
 	{
-		this.lamps = lamps;
+		this.lampProps = lampProps;
 		this.globalLight = globalLight;
 	}
 

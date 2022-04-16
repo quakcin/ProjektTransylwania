@@ -58,15 +58,15 @@ class ServerGameKillingStage extends ServerGameStage
 		double dist
 				= prey.getDist(vamp.getX(), vamp.getY());
 
-		if (dist < 100)
+		if (dist < Constants.VAMP_ATTACK_RANGE)
 			vampSuccessfulAttack(vamp, prey);
 
-		else if (dist < 250)
+		else if (dist < Constants.VAMP_AGRO_RANGE)
 			vampFailedAttack(vamp, prey);
 
 		else
 			game.playSoundNear(
-					vamp.getX(), vamp.getY(), 810 * 6,
+					vamp.getX(), vamp.getY(), Constants.FAR_PLANE,
 					"vampScream"
 			);
 	}
@@ -80,7 +80,7 @@ class ServerGameKillingStage extends ServerGameStage
 
 	private void vampFailedAttack(Player vamp, Player prey)
 	{
-		game.playSoundNear(vamp.getX(), vamp.getY(), 810 * 2, "vampMiss");
+		game.playSoundNear(vamp.getX(), vamp.getY(), Constants.DEFAULT_ROOM_SIZE * 2, "vampMiss");
 		vamp.setSpacePressedDisabled(Constants.VAMP_ATTACK_MISS_DELAY);
 		vamp.facePlayer(prey);
 	}
@@ -91,9 +91,9 @@ class ServerGameKillingStage extends ServerGameStage
 		for (Player player : game.getPlayers())
 			if (player.isNotGhostAndHasSpacePressed())
 			{
-				Lamp lampInUse = game.getLampInUse(player);
-				if (lampInUse != null)
-					lampInUse.UseLamp(player, game);
+				LampProp lampPropInUse = game.getLampInUse(player);
+				if (lampPropInUse != null)
+					lampPropInUse.UseLamp(player, game);
 			}
 	}
 
@@ -104,24 +104,24 @@ class ServerGameKillingStage extends ServerGameStage
 				chestAction(player);
 	}
 
-	private void chestAction(Player player)
+	private void chestAction (Player player)
 	{
-		Chest chestInUse = game.getChestInUse(player);
-		if (chestInUse != null)
-			chestInUse.UseChest(player, game);
+		ChestProp chestPropInUse = game.getChestInUse(player);
+		if (chestPropInUse != null)
+			chestPropInUse.UseChest(player, game);
 
-		player.setSpacePressedDisabled(40); // FIXME: MAGIC
+		player.setSpacePressedDisabled(Constants.CHEST_INTERACTION_SPACE_DELAY);
 		player.setForcingSynchronization(true);
 	}
 
 	private void antiAFKFilter ()
 	{
-		if (server.getTick() % 20 != 0)
+		if (server.getTick() % Constants.TICK_1SEC != 0)
 			return;
 
-		for (Chest chest : game.getChests())
-			if (chest.getPlayerUUID() != null) {
-				Player afkPlayer = game.getPlayerByID(chest.getPlayerUUID());
+		for (ChestProp chestProp : game.getChests())
+			if (chestProp.getPlayerUUID() != null) {
+				Player afkPlayer = game.getPlayerByID(chestProp.getPlayerUUID());
 				afkPlayer.setAfkPenalty(afkPlayer.getAfkPenalty() + 1);
 			}
 	}
@@ -142,11 +142,8 @@ class ServerGameKillingStage extends ServerGameStage
 	{
 		if (game.countSurvivors() <= 0)
 			game.setWinnerFlag(Constants.WINNER_VAMP);
-
-		if (!game.isVampireConnected() || server.isOverTime())
+		else
 			game.setWinnerFlag(Constants.WINNER_SURVIVOR);
-
-
 	}
 
 }

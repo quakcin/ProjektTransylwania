@@ -10,7 +10,7 @@ public class ClientHandleLampListPacket extends ClientHandlePacket
 	void packetHandler(Object packet)
 	{
 		LampsListPacket lampsListPacket = (LampsListPacket) packet;
-		clientGame.setLamps(lampsListPacket.getLamps());
+		clientGame.setLamps(lampsListPacket.getLampProps());
 		client.setGlobalLight(lampsListPacket.getGlobalLight());
 	}
 }

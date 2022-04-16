@@ -10,6 +10,6 @@ public class ClientHandleChestListPacket extends ClientHandlePacket
 	void packetHandler(Object packet)
 	{
 		ChestsListPacket chestsListPacket = (ChestsListPacket) packet;
-		clientGame.setChests(chestsListPacket.getChests());
+		clientGame.setChests(chestsListPacket.getChestProps());
 	}
 }

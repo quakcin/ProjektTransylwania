@@ -18,15 +18,15 @@ class ClientGameKeyboardComponent extends ClientGameComponent
 	{
 		if (keyboardState['w'])
 		{
-			clientGame.getPlayer().push(16.3, clientGame);
+			clientGame.getPlayer().push(Constants.PLAYER_DEFAULT_FORWARD_MOTION_SPEED, clientGame);
 			clientGame.getPlayer().setPlayerMoving(true);
 		}
 		if (keyboardState['s'])
-			clientGame.getPlayer().push(-12, clientGame);
+			clientGame.getPlayer().push(Constants.PLAYER_DEFAULT_BACKWARD_MOTION_SPEED, clientGame);
 		if (keyboardState['a'])
-			clientGame.getPlayer().turn(-10);
+			clientGame.getPlayer().turn(-Constants.PLAYER_DEFAULT_TURNING_SPEED);
 		if (keyboardState['d'])
-			clientGame.getPlayer().turn(10);
+			clientGame.getPlayer().turn(Constants.PLAYER_DEFAULT_TURNING_SPEED);
 		if (keyboardState[' '])
 			clientGame.getPlayer().setSpacePressedEnabled();
 	}

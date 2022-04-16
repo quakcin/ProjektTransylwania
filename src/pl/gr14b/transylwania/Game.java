@@ -122,9 +122,9 @@ class Game implements Serializable
 		gameMap.getGameMapProps().spreadOutChests();
 	}
 
-	ArrayList<Lamp> getLamps()
+	ArrayList<LampProp> getLamps()
 	{
-		return gameMap.getGameMapProps().getLamps();
+		return gameMap.getGameMapProps().getLampProps();
 	}
 
 	void setPlayers (ArrayList<Player> players)
@@ -132,17 +132,17 @@ class Game implements Serializable
 		this.players = players;
 	}
 
-	void setLamps (ArrayList<Lamp> lamps)
+	void setLamps (ArrayList<LampProp> lampProps)
 	{
-		gameMap.getGameMapProps().setLamps(lamps);
+		gameMap.getGameMapProps().setLampProps(lampProps);
 	}
 
-	Chest getChestInUse (Player player)
+	ChestProp getChestInUse (Player player)
 	{
 		return gameMap.getGameMapProps().getChestInUse(player);
 	}
 
-	Lamp getLampInUse (Player player)
+	LampProp getLampInUse (Player player)
 	{
 		return gameMap.getGameMapProps().getLampInUse(player);
 	}
@@ -178,14 +178,14 @@ class Game implements Serializable
 		gameFlags.setWinnerFlag(winnerFlag);
 	}
 
-	ArrayList<Chest> getChests ()
+	ArrayList<ChestProp> getChests ()
 	{
-		return gameMap.getGameMapProps().getChests();
+		return gameMap.getGameMapProps().getChestProps();
 	}
 
-	void setChests (ArrayList<Chest> chests)
+	void setChests (ArrayList<ChestProp> chestProps)
 	{
-		gameMap.getGameMapProps().setChests(chests);
+		gameMap.getGameMapProps().setChestProps(chestProps);
 	}
 
 	Player getPlayerByID (UUID id)

@@ -32,15 +32,15 @@ class ServerGameLobbyStage extends ServerGameStage
 	private void anotherPlayerJoinEvent(int playersCount)
 	{
 		if (playersCount >= 2)
-			game.setWaitingTime((8 - playersCount) * 2);
+			game.setWaitingTime((Constants.MAX_PLAYERS - playersCount) * 2);
 
 		else
-			game.setWaitingTime(8 * 5);
+			game.setWaitingTime(Constants.LOBBY_MAX_WAITING_TIME);
 
 		playersInQue = playersCount;
 	}
 
-	private boolean enoughPlayersToStartTheGame(int playersCount) // OOP CC
+	private boolean enoughPlayersToStartTheGame (int playersCount)
 	{
 		return playersCount >= 2;
 	}
@@ -75,7 +75,7 @@ class ServerGameLobbyStage extends ServerGameStage
 	private void updateGameStatus ()
 	{
 		game.setGameStatus(GameStatus.INTRO);
-		game.setWaitingTime(5);
+		game.setWaitingTime(Constants.INTRO_PHASE_DURATION);
 		server.setTick(1);
 	}
 

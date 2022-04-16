@@ -23,12 +23,12 @@ class ClientGameFinalTicksComponent extends ClientGameComponent
 	private boolean isTimerLowEnoughToPlayTickingSound()
 	{
 		return clientGame.getGameTime() > 0
-				&& clientGame.getGameTime() <= 15; // FIXME: MAKE INTO MAGIC NUMBER
+				&& clientGame.getGameTime() <= Constants.CLOCK_TICKING_TRIGGER;
 	}
 
 	private boolean isSpecificGameStageAndEvenTick()
 	{
 		return clientGame.getGameStatus().equals(GameStatus.KILLING)
-				&& (tick % 25) == 0;
+				&& (tick % Constants.SERVER_ODD_TICK) == 0;
 	}
 }

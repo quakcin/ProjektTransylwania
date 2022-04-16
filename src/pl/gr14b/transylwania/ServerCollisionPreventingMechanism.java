@@ -47,13 +47,13 @@ public class ServerCollisionPreventingMechanism
 
 	private boolean isOneOfPlayersHidden(Player player, Player otherPlayer)
 	{
-		return Chest.isPlayerHidden(game.getChests(), player.getPlayerID())
-				|| Chest.isPlayerHidden(game.getChests(), otherPlayer.getPlayerID());
+		return ChestProp.isPlayerHidden(game.getChests(), player.getPlayerID())
+				|| ChestProp.isPlayerHidden(game.getChests(), otherPlayer.getPlayerID());
 	}
 
 	private boolean arePlayersTooClose (Player player, Player otherPlayer)
 	{
-		return player.getDist(otherPlayer.getX(), otherPlayer.getY()) < 50;
+		return player.getDist(otherPlayer.getX(), otherPlayer.getY()) < Constants.PLAYER_COLLIDER;
 	}
 
 
@@ -65,8 +65,8 @@ public class ServerCollisionPreventingMechanism
 		player.setAng(otherPlayerAngle);
 		otherPlayer.setAng(playerAngle);
 
-		player.push(90, game);
-		otherPlayer.push(90, game);
+		player.push(Constants.DEFAULT_GRID_SIZE, game);
+		otherPlayer.push(Constants.DEFAULT_GRID_SIZE, game);
 
 		player.setAng(playerAngle);
 		otherPlayer.setAng(otherPlayerAngle);
@@ -83,8 +83,9 @@ public class ServerCollisionPreventingMechanism
 	{
 		for (Player p : game.getPlayers())
 			if (p.getPlayerType().equals(PlayerType.GHOST))
-				if (p.getDist(Constants.MAP_SIZE * 405, Constants.MAP_SIZE * 405) > (Constants.MAP_SIZE + 1) * 405)
+				if (p.getDist(Constants.MAP_CENTER, Constants.MAP_CENTER) > Constants.GHOST_MAX_DIST)
 					p.teleportToSpawn(game.getPlayers());
 	}
+
 
 }

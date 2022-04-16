@@ -74,7 +74,7 @@ class ServerHandler extends Thread
 	{
 		try
 		{
-			Thread.sleep(5L);
+			Thread.sleep(Constants.SERVER_DATA_EXCHANGE_YIELD);
 			lock.lock();
 			handleDataExchange(objIn.readObject());
 			objOut.flush();
@@ -84,6 +84,7 @@ class ServerHandler extends Thread
 		{
 			e.printStackTrace();
 			handlePlayerDisappearance();
+			lock.unlock();
 			return false;
 		}
 

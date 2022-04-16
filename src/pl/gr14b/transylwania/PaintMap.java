@@ -1,6 +1,6 @@
 package pl.gr14b.transylwania;
 
-public class PaintMap extends GraphicsPainter
+class PaintMap extends GraphicsPainter
 {
 	PaintMap(Client client) {
 		super(client);
@@ -15,15 +15,15 @@ public class PaintMap extends GraphicsPainter
 	}
 
 	
-	boolean isRoomCloseEnough (Room r)
+	private boolean isRoomCloseEnough(Room r)
 	{
 		return !(
-					 Math.abs(r.getX() - clientGame.getPlayer().getX() / 810) > 2
-				|| Math.abs(r.getY() - clientGame.getPlayer().getY() / 810) > 2
+					 Math.abs(r.getX() - clientGame.getPlayer().getX() / Constants.DEFAULT_ROOM_SIZE) > 2
+				|| Math.abs(r.getY() - clientGame.getPlayer().getY() / Constants.DEFAULT_ROOM_SIZE) > 2
 		);
 	}
 
-	void paintRooms ()
+	private void paintRooms()
 	{
 		for (Room r : clientGame.getRooms())
 			if (isRoomCloseEnough(r))
@@ -31,9 +31,7 @@ public class PaintMap extends GraphicsPainter
 	}
 
 
-	// FIXME: L8ER
-
-	void paintVerticalDoors()
+	private void paintVerticalDoors()
 	{
 		for (int y = 0; y < Constants.MAP_SIZE; y++)
 			for (int x = 0; x < Constants.MAP_SIZE + 1; x++)
@@ -42,15 +40,30 @@ public class PaintMap extends GraphicsPainter
 
 				if (clientGame.getVerticalDoors()[index])
 				{
-					int dx = x * 810 + 45;
-					int dy = y * 810 - 450 + 90 + 810;
-					g.drawImage(stuff.getDoorTexture(),offX + (int) (clientGame.getPlayer().getX() - dx), offY + (int) (clientGame.getPlayer().getY() - dy), 90, 90, null);
+					int dx = x
+							* Constants.DEFAULT_ROOM_SIZE
+							+ Constants.DEFAULT_DOOR_OFFSET;
+
+					int dy = y
+							* Constants.DEFAULT_ROOM_SIZE
+							- Constants.DEFAULT_HALF_ROOM_SIZE
+							+ Constants.DEFAULT_GRID_SIZE
+							+ Constants.DEFAULT_ROOM_SIZE;
+
+					g.drawImage(
+							stuff.getDoorTexture(),
+							offX + (int) (clientGame.getPlayer().getX() - dx),
+							offY + (int) (clientGame.getPlayer().getY() - dy),
+							Constants.DEFAULT_GRID_SIZE,
+							Constants.DEFAULT_GRID_SIZE,
+							null
+					);
 				}
 
 			}
 	}
 
-	void paintHorizontalDoors()
+	private void paintHorizontalDoors()
 	{
 		for (int y = 0; y < Constants.MAP_SIZE + 1; y++)
 			for (int x = 0; x < Constants.MAP_SIZE; x++)
@@ -59,9 +72,24 @@ public class PaintMap extends GraphicsPainter
 
 				if (clientGame.getHorizontalDoors()[index])
 				{
-					int dx = x * 810 - 450 + 90 + 810;
-					int dy = y * 810 + 45;
-					g.drawImage(stuff.getDoorTexture(), offX + (int) (clientGame.getPlayer().getX() - dx), offY + (int) (clientGame.getPlayer().getY() - dy), 90, 90, null);
+					int dx = x
+							* Constants.DEFAULT_ROOM_SIZE
+							- Constants.DEFAULT_HALF_ROOM_SIZE
+							+ Constants.DEFAULT_GRID_SIZE
+							+ Constants.DEFAULT_ROOM_SIZE;
+
+					int dy = y
+							* Constants.DEFAULT_ROOM_SIZE
+							+ Constants.DEFAULT_DOOR_OFFSET;
+
+					g.drawImage(
+							stuff.getDoorTexture(),
+							offX + (int) (clientGame.getPlayer().getX() - dx),
+							offY + (int) (clientGame.getPlayer().getY() - dy),
+							Constants.DEFAULT_GRID_SIZE,
+							Constants.DEFAULT_GRID_SIZE,
+							null
+					);
 				}
 
 			}

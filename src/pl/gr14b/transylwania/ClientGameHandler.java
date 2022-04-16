@@ -46,7 +46,7 @@ public class ClientGameHandler extends Thread
 		{
 			updateGameComponents();
 			tick += 1;
-			Thread.sleep(1000L / 25L);
+			Thread.sleep(Constants.ODD_TICK_LONG_DELAY);
 		}
 	}
 

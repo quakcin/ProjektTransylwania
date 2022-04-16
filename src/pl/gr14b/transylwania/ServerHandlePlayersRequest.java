@@ -39,7 +39,7 @@ class ServerHandlePlayersRequest extends ServerHandleRequest
 	private boolean requiresSynchronization(Player clientPlayer)
 	{
 		return !(
-				serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < 100
+				serverGame.getPlayer().getDist(clientPlayer.getX(), clientPlayer.getY()) < Constants.ALLOW_NO_SYNC_DIST
 				&& !serverGame.getPlayer().isForcingLocationSynchronization()
 		);
 	}

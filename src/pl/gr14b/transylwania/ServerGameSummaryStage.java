@@ -15,6 +15,6 @@ class ServerGameSummaryStage extends ServerGameStage
 
 	private boolean isOverSummary()
 	{
-		return server.getTick() > 60;
+		return server.getTick() > Constants.MINUTE_IN_SECONDS;
 	}
 }

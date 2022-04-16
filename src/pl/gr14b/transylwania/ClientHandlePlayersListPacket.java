@@ -12,10 +12,13 @@ public class ClientHandlePlayersListPacket extends ClientHandlePacket
 		Player oldPlayerState = clientGame.getPlayer();
 		clientGame.setPlayers(((PlayersListPacket) packet).getPlayers());
 
-		if (oldPlayerState != null)
-			if (clientGame.getPlayer().getDist(oldPlayerState.getX(), oldPlayerState.getY()) < 150) // FIXME: make this value smaller
-			{
-				clientGame.getPlayer().copyLocation(oldPlayerState);
-			}
+		if (oldPlayerState != null && hasToSyncWithPlayerLocation(oldPlayerState))
+			clientGame.getPlayer().copyLocation(oldPlayerState);
+	}
+
+	private boolean hasToSyncWithPlayerLocation (Player oldPlayerState)
+	{
+		return clientGame.getPlayer().getDist(oldPlayerState.getX(), oldPlayerState.getY())
+				< Constants.SERVER_THROTTLING_LIMIT;
 	}
 }

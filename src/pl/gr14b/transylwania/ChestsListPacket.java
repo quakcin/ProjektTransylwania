@@ -5,16 +5,16 @@ import java.util.ArrayList;
 
 class ChestsListPacket extends Packets implements Serializable
 {
-	private ArrayList<Chest> chests;
+	private ArrayList<ChestProp> chestProps;
 
-	ChestsListPacket (ArrayList<Chest> chests)
+	ChestsListPacket (ArrayList<ChestProp> chestProps)
 	{
-		this.chests = chests;
+		this.chestProps = chestProps;
 	}
 
-	public ArrayList<Chest> getChests()
+	public ArrayList<ChestProp> getChestProps()
 	{
-		return chests;
+		return chestProps;
 	}
 
 }

@@ -62,9 +62,9 @@ class ServerResponseHandler
 	private Packets getNextPacket(ArrayList<Packets> packets)
 	{
 		int idx = serverGame.getPlayer().getNextPacket();
-		return packets.get((idx <= 10)
+		return packets.get((idx <= Constants.LAST_PACKET_ID)
 				? 0
-				: idx - 10
+				: idx - Constants.LAST_PACKET_ID
 		);
 	}
 

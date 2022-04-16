@@ -31,7 +31,7 @@ public class ClientGraphicsHandler extends Thread
 	{
 		try
 		{
-			Thread.sleep(1000L / 60L);
+			Thread.sleep(Constants.CLIENT_SCREEN_REFRESH_RATE);
 		}
 		catch (Exception e)
 		{

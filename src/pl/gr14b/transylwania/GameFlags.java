@@ -12,7 +12,7 @@ class GameFlags implements Serializable
 
 	GameFlags ()
 	{
-		globalLight = 0.65d;
+		globalLight = Constants.DEFAULT_GLOBAL_LIGHTNESS;
 		waitingTime = 0;
 		gameTime = 0;
 		gameStatus = GameStatus.LOBBY;

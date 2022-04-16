@@ -26,7 +26,7 @@ class PaintPlayers extends GraphicsPainter
 
 	private boolean isPlayerHidden(Player p)
 	{
-		return Chest.isPlayerHidden(clientGame.getChests(), p.getPlayerID());
+		return ChestProp.isPlayerHidden(clientGame.getChests(), p.getPlayerID());
 	}
 
 	private boolean isAGhostThatCannotBeVisibleByMainPlayer(Player p)

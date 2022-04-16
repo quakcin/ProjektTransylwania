@@ -8,7 +8,7 @@ public class ClientGameWalkingSoundsComponent extends ClientGameComponent
 
 	private boolean isPlayerOnTheirStepTick()
 	{
-		return tick % 13L == 0;
+		return tick % Constants.PLAYER_STEP_TICK == 0;
 	}
 
 	@Override

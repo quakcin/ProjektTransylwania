@@ -35,16 +35,15 @@ class ClientGameIntroListenerComponent extends ClientGameComponent
 	private void beginRoleCallPhase()
 	{
 		setRoleCallFlags();
-
-		if (isMainPlayerAVampire())
-			Stuff.playSound("vamp-theme");
-		else
-			Stuff.playSound("surv-theme");
+		Stuff.playSound(isMainPlayerAVampire()
+			? "vamp-theme"
+			: "surv-theme"
+		);
 	}
 
 	private void setRoleCallFlags()
 	{
-		client.setRoleCallTime(25 * 4);
-		client.setGlobalLight(0.75d);
+		client.setRoleCallTime(Constants.ROLE_CALL_DURATION);
+		client.setGlobalLight(Constants.ROLE_CALL_LIGHTNESS);
 	}
 }

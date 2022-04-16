@@ -35,8 +35,8 @@ public class GameMap implements Serializable
 	{
 		for (int i = 0; i < Constants.MAP_SIZE * (Constants.MAP_SIZE + 1); i++)
 		{
-			verticalDoors[i] = Math.random() * 100 > 75;
-			horizontalDoors[i] = Math.random() * 100 > 80;
+			verticalDoors[i] = Math.random() * 100 > Constants.VERTICAL_DOORS_SPAWN_CHANCE;
+			horizontalDoors[i] = Math.random() * 100 > Constants.HORIZONTAL_DOORS_SPAWN_CHANCE;
 		}
 	}
 

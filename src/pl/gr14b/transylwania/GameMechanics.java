@@ -79,19 +79,30 @@ class GameMechanics implements Serializable
 		Player vamp = getVamp();
 		Player surv = getNearestSurvivor(vamp);
 
-		if (vamp == null || surv == null)
+		if (hasToPerformAnchorPointLookup(surv, vamp))
 			return null;
 
-		if (Chest.isPlayerHidden(game.getChests(), surv.getPlayerID()))
-			return null;
-
-		double maxVisDistance = Math.ceil((double) countSurvivors() / 3.5) * 810 + 500;
+		double maxVisDistance = calculateMaxVisibleDistance();
 		double distToPlayer = vamp.getDist(surv.getX(), surv.getY());
 
-		if (distToPlayer <= maxVisDistance)
-			return surv;
-		else
-			return null;
+		return distToPlayer <= maxVisDistance
+				? surv
+				: null
+				;
+	}
+
+	private boolean hasToPerformAnchorPointLookup(Player surv, Player vamp)
+	{
+		return (vamp == null || surv == null)
+				|| ChestProp.isPlayerHidden(game.getChests(), surv.getPlayerID());
+	}
+
+	private double calculateMaxVisibleDistance()
+	{
+		return Math.ceil(
+				(double) countSurvivors() / Constants.PLAYER_ARROW_DELTA_X)
+				* Constants.DEFAULT_ROOM_SIZE + Constants.PLAYER_ARROW_DELTA_Y
+				;
 	}
 
 	ArrayList<Player> getPlayersNear (double dx, double dy, double dist)
@@ -134,11 +145,17 @@ class GameMechanics implements Serializable
 		for (Player p : game.getPlayers())
 			p.Reset(game.getPlayers());
 
-		game.setWaitingTime((8 - game.getPlayers().size()) * 5);
+		game.setWaitingTime(calculateWaitingTime());
 		game.setGameTime(0);
 		game.setGameStatus(GameStatus.LOBBY);
-		game.setGlobalLight(0.6d);
+		game.setGlobalLight(Constants.DEFAULT_GLOBAL_LIGHTNESS);
 		game.setGameMap(new GameMap(game));
+	}
+
+	private int calculateWaitingTime ()
+	{
+		return (Constants.MAX_PLAYERS - game.getPlayers().size())
+				* Constants.WAITING_TIME_DELTA;
 	}
 
 }

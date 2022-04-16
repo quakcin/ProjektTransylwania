@@ -48,24 +48,23 @@ class ServerGameIntroStage extends ServerGameStage
 
 	private int  calculateMatchDuration ()
 	{
-		double[] timesPerPlayers = {3d, 4.5d, 5.5d, 6.3d, 7d, 7.5d, 8d};
 		return (int) Math.round(
-				timesPerPlayers[game.countSurvivors() - 1] * 60d
+				Constants.GAME_TIMES_PER_PLAYERS[game.countSurvivors() - 1] * Constants.MINUTE_IN_SECONDS
 		);
 	}
 
 	private void blowOutLamps()
 	{
-		for (Lamp lamp : game.getLamps())
-			lamp.BlowOut();
+		for (LampProp lampProp : game.getLamps())
+			lampProp.BlowOut();
 	}
 
 	private void awaitingIntroSound()
 	{
-		if (server.getTick() == 56) // FIXME: Magic Sound
+		if (server.getTick() == Constants.INTRO_MUSIC_TICK)
 		{
-			game.playSoundNear(0, 0, 100000L, "intro");
-			game.setGlobalLight(1.0d);
+			game.playSoundNear(0, 0, Constants.FAR_PLANE, "intro");
+			game.setGlobalLight(1d);
 		}
 	}
 

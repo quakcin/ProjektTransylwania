@@ -13,13 +13,25 @@ class Room implements Serializable
 	{
 		this.x = x;
 		this.y = y;
-		this.texture = Constants.random(0, 11);
+		this.texture = Constants.random(
+				0, Constants.ROOM_TEXTURE_COUNT
+		);
 	}
 
 	void paintRoom (GraphicsPainter graphicsPainter)
 	{
-		int rx = graphicsPainter.getOffX() + (int) (graphicsPainter.getPlayer().getX() - getX() * 810 - 810);
-		int ry = graphicsPainter.getOffY() + (int) (graphicsPainter.getPlayer().getY() - getY() * 810 - 810);
+		int rx = graphicsPainter.getOffX() + (int) (
+				graphicsPainter.getPlayer().getX()
+				- getX() * Constants.DEFAULT_ROOM_SIZE
+				- Constants.DEFAULT_ROOM_SIZE
+		);
+
+		int ry = graphicsPainter.getOffY() + (int) (
+				graphicsPainter.getPlayer().getY()
+				- getY() * Constants.DEFAULT_ROOM_SIZE
+				- Constants.DEFAULT_ROOM_SIZE
+		);
+
 		graphicsPainter.getG().drawImage(
 				graphicsPainter.getStuff().getRooms().get(getTexture()),
 				rx, ry, 810, 810, null

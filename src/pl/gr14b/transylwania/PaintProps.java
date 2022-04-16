@@ -22,14 +22,14 @@ class PaintProps extends GraphicsPainter
 
 	private void paintLamps()
 	{
-		for (Lamp lamp : clientGame.getLamps())
-			lamp.Draw(g, offX, offY, stuff, clientGame);
+		for (LampProp lampProp : clientGame.getLamps())
+			lampProp.Draw(g, offX, offY, stuff, clientGame);
 	}
 
 	private void paintChests()
 	{
-		for (Chest chest : clientGame.getChests())
-			chest.Draw(g, offX, offY, stuff, clientGame);
+		for (ChestProp chestProp : clientGame.getChests())
+			chestProp.Draw(g, offX, offY, stuff, clientGame);
 	}
 
 }

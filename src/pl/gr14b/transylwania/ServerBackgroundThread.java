@@ -32,7 +32,7 @@ class ServerBackgroundThread extends Thread
 		{
 			try
 			{
-				Thread.sleep(1000L / 20L);
+				Thread.sleep(Constants.SERVER_THREAD_YIELD);
 				lock.lock();
 				BackgroundUpdate();
 			}
@@ -53,7 +53,7 @@ class ServerBackgroundThread extends Thread
 
 	boolean hasSecondPassed()
 	{
-		return getTick() % 10 == 0;
+		return getTick() % Constants.TICK_1SEC == 0;
 	}
 
 	boolean isOverTime ()

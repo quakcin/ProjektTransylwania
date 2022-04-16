@@ -7,23 +7,36 @@ public class GameMapProps implements Serializable
 {
 	// Game Map Props
 	private ArrayList<Prop> props;
-	private ArrayList<Lamp> lamps;
-	private ArrayList<Chest> chests;
+	private ArrayList<LampProp> lampProps;
+	private ArrayList<ChestProp> chestProps;
 	private Game game;
 
 	GameMapProps (Game game)
 	{
 		props = new ArrayList<>();
-		lamps = new ArrayList<>();
-		chests = new ArrayList<>();
+		lampProps = new ArrayList<>();
+		chestProps = new ArrayList<>();
 		this.game = game;
 	}
 
 	int randRoomPos (int objSize)
 	{
-		int roomEdge = (Constants.random(0, Constants.MAP_SIZE - 1) * 810 + 2 * 90);
-		int roomOffset = Constants.random(0, 810 - 2 * 90 - objSize - 20);
+		int roomEdge = (
+				Constants.random(0, Constants.MAP_SIZE - 1)
+				* Constants.DEFAULT_ROOM_SIZE
+				+ Constants.DEFAULT_ROOM_EDGE
+		);
+		int roomOffset = Constants.random(0, calculateMaximumRoomOffset(objSize));
 		return roomEdge + roomOffset;
+	}
+
+	int calculateMaximumRoomOffset (int objSize)
+	{
+		return Constants.DEFAULT_ROOM_SIZE
+				- 2 * Constants.DEFAULT_GRID_SIZE
+				- objSize
+				- Constants.DEFAULT_ROOM_PADDING
+				;
 	}
 
 	Integer[] randSpot (int objSize)
@@ -39,12 +52,12 @@ public class GameMapProps implements Serializable
 
 	boolean isColliding (int dx, int dy)
 	{
-		for (Lamp lamp : getLamps())
-			if (lamp.getDist(dx, dy) < 100)
+		for (LampProp lampProp : getLampProps())
+			if (lampProp.getDist(dx, dy) < Constants.LAMP_COLLIDER)
 				return true;
 
-		for (Chest chest : getChests())
-			if (chest.getDist(dx, dy) < 400)
+		for (ChestProp chestProp : getChestProps())
+			if (chestProp.getDist(dx, dy) < Constants.CHEST_COLLIDER)
 				return true;
 
 		return false;
@@ -52,55 +65,62 @@ public class GameMapProps implements Serializable
 
 	void spreadOutLamps ()
 	{
-		for (int i = 0; i < game.getPlayers().size() * 5; i++)
+		for (int i = 0; i < game.getPlayers().size() * Constants.LAMP_PLAYERS_DELTA; i++)
 		{
-			Integer[] pos = randSpot(60);
-			lamps.add(new Lamp(pos[0], pos[1]));
+			Integer[] pos = randSpot(Constants.DEFAULT_LAMP_SIZE);
+			lampProps.add(new LampProp(pos[0], pos[1]));
 		}
 	}
 
 	void spreadOutChests()
 	{
-		for (int i = 0; i < game.getPlayers().size() * 6; i++)
+		for (int i = 0; i < game.getPlayers().size() * Constants.CHEST_PLAYERS_DELTA; i++)
 		{
-			Integer[] pos = randSpot(100);
-			chests.add(new Chest(pos[0], pos[1]));
+			Integer[] pos = randSpot(Constants.DEFAULT_CHEST_SIZE);
+			chestProps.add(new ChestProp(pos[0], pos[1]));
 		}
 	}
 
-	Lamp getLampInUse (Player player)
+	LampProp getLampInUse (Player player)
 	{
-		Lamp nearest = null;
-		double nDist = 0xFFFF;
-		for (Lamp lamp : lamps)
+		LampProp nearest = null;
+		double nDist = Constants.FAR_PLANE;
+		for (LampProp lampProp : lampProps)
 		{
-			double dist = player.getDist(lamp.getX() - 20, lamp.getY() - 20);
+			double dist = player.getDist(
+					lampProp.getX() - Constants.DEFAULT_ROOM_PADDING,
+					lampProp.getY() - Constants.DEFAULT_ROOM_PADDING
+			);
 			if (dist < nDist)
 			{
 				nDist = dist;
-				nearest = lamp;
+				nearest = lampProp;
 			}
 		}
-		if (nDist < 90)
+		if (nDist < Constants.DEFAULT_GRID_SIZE)
 			return nearest;
 		else
 			return null;
 	}
 
-	Chest getChestInUse (Player player)
+	ChestProp getChestInUse (Player player)
 	{
-		Chest nearest = null;
-		double nDist = 0xFFFF;
-		for (Chest chest : chests)
+		ChestProp nearest = null;
+		double nDist = Constants.FAR_PLANE;
+		for (ChestProp chestProp : chestProps)
 		{
-			double dist = player.getDist(chest.getX() - 30, chest.getY() - 30);
+			double dist = player.getDist(
+					chestProp.getX() - Constants.DEFAULT_ROOM_PADDING,
+					chestProp.getY() - Constants.DEFAULT_ROOM_PADDING
+			);
 			if (dist < nDist)
 			{
 				nDist = dist;
-				nearest = chest;
+				nearest = chestProp;
 			}
 		}
-		if (nDist < 90)
+
+		if (nDist < Constants.DEFAULT_GRID_SIZE)
 			return nearest;
 		else
 			return null;
@@ -115,19 +135,19 @@ public class GameMapProps implements Serializable
 		this.props = props;
 	}
 
-	public ArrayList<Lamp> getLamps() {
-		return lamps;
+	public ArrayList<LampProp> getLampProps() {
+		return lampProps;
 	}
 
-	public void setLamps(ArrayList<Lamp> lamps) {
-		this.lamps = lamps;
+	public void setLampProps(ArrayList<LampProp> lampProps) {
+		this.lampProps = lampProps;
 	}
 
-	public ArrayList<Chest> getChests() {
-		return chests;
+	public ArrayList<ChestProp> getChestProps() {
+		return chestProps;
 	}
 
-	public void setChests(ArrayList<Chest> chests) {
-		this.chests = chests;
+	public void setChestProps(ArrayList<ChestProp> chestProps) {
+		this.chestProps = chestProps;
 	}
 }

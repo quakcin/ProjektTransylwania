@@ -143,7 +143,7 @@ class Player implements Serializable
 	void Reset(ArrayList<Player> allPlayers)
 	{
 		playerFlags.reset();
-		this.health = 3;
+		this.health = Constants.DEFAULT_PLAYER_HEALTH;
 		teleportToSpawn(allPlayers);
 	}
 
@@ -161,7 +161,7 @@ class Player implements Serializable
 	{
 		if (health < 0)
 			this.health = 0;
-		else this.health = Math.min(health, 3);
+		else this.health = Math.min(health, Constants.DEFAULT_PLAYER_HEALTH);
 	}
 
 	double getDist(double dx, double dy)
@@ -180,7 +180,7 @@ class Player implements Serializable
 
 		while (oldCharacter == this.character)
 		{
-			this.character = Constants.random(0, 8);
+			this.character = Constants.random(0, Constants.CHARACTER_SPRITE_COUNT);
 		}
 
 		setForcingSynchronization(true);
@@ -188,22 +188,29 @@ class Player implements Serializable
 
 	private void splatBloodAroundPlayer (Game serverGame)
 	{
-		serverGame.getProps().add(new Blood(
-				(int) getX() + Constants.random(15, 90), (int) getY() + Constants.random(15, 90)
+		serverGame.getProps().add(new BloodProp(
+				(int) getX() + Constants.random(
+						Constants.BLOOD_SPLASH_MIN_OFFSET,
+						Constants.BLOOD_SPLASH_MAX_OFFSET
+				),
+				(int) getY() + Constants.random(
+						Constants.BLOOD_SPLASH_MIN_OFFSET,
+						Constants.BLOOD_SPLASH_MAX_OFFSET
+				)
 		));
 	}
 
 	private void stabPlayerWithAKnife (Game serverGame)
 	{
-		serverGame.playSoundNear(getX(), getY(), 810 * 6, "stab");
+		serverGame.playSoundNear(getX(), getY(), Constants.STAB_SOUND_SPREAD, "stab");
 		splatBloodAroundPlayer(serverGame);
 	}
 
 	private void removePlayerFromChest (Game serverGame)
 	{
-		for (Chest chest : serverGame.getChests())
-			if (matchPlayersUUID(chest.getPlayerUUID()))
-				chest.setPlayerUUID(null);
+		for (ChestProp chestProp : serverGame.getChests())
+			if (matchPlayersUUID(chestProp.getPlayerUUID()))
+				chestProp.setPlayerUUID(null);
 	}
 
 	private boolean isPlayerDeath ()
@@ -214,10 +221,17 @@ class Player implements Serializable
 	private void killPlayerOnSite (Game serverGame)
 	{
 		setPlayerType(PlayerType.GHOST);
-		serverGame.getProps().add(new DeadBody(
-				(int) getX() + Constants.random(15, 90), (int) getY() + Constants.random(15, 90)
+		serverGame.getProps().add(new DeadBodyProp(
+				(int) getX() + Constants.random(
+						Constants.BLOOD_SPLASH_MIN_OFFSET,
+						Constants.BLOOD_SPLASH_MAX_OFFSET
+				),
+				(int) getY() + Constants.random(
+						Constants.BLOOD_SPLASH_MIN_OFFSET,
+						Constants.BLOOD_SPLASH_MAX_OFFSET
+				)
 		));
-		serverGame.playSoundNear(getX(), getY(), 2000, "death");
+		serverGame.playSoundNear(getX(), getY(), Constants.DEATH_SOUND_SPREAD, "death");
 	}
 
 	void Damage (Game serverGame)
@@ -304,10 +318,18 @@ class Player implements Serializable
 
 	private BufferedImage getScaledAndRotatedPlayerSplash(ImageIcon pfp)
 	{
-		AffineTransform aft = AffineTransform.getRotateInstance(getAng() + 1.57075, pfp.getIconWidth() >> 1, pfp.getIconHeight() >> 1);
+		AffineTransform aft = AffineTransform.getRotateInstance(
+				getAng() + Constants.PLAYER_SPRITE_FIXED_ANGLE,
+				pfp.getIconWidth() >> 1,
+				pfp.getIconHeight() >> 1
+		);
 		AffineTransformOp aftop = new AffineTransformOp(aft, AffineTransformOp.TYPE_BILINEAR);
 
-		BufferedImage bfi = new BufferedImage(pfp.getIconWidth(), pfp.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		BufferedImage bfi = new BufferedImage(
+				pfp.getIconWidth(),
+				pfp.getIconHeight(),
+				BufferedImage.TYPE_INT_ARGB
+		);
 		Graphics bfig = bfi.createGraphics();
 		pfp.paintIcon(null, bfig, 0, 0);
 		return aftop.filter(bfi, null);
@@ -322,9 +344,15 @@ class Player implements Serializable
 	{
 		if (!isSupposedToDrawPlayerNickname(graphicsPainter.clientGame))
 			return;
-		graphicsPainter.getG().setFont(graphicsPainter.getStuff().getFont().deriveFont(20f));
+		graphicsPainter.getG().setFont(
+				graphicsPainter.getStuff().getFont().deriveFont(Constants.PLAYER_NICKNAME_FONT_SIZE)
+		);
 		graphicsPainter.getG().setColor(new Color(255, 221, 0));
-		graphicsPainter.getG().drawString(getNickName(), (int) (cx - (getNickName().length() * 5.5)), cy - 45);
+		graphicsPainter.getG().drawString(
+				getNickName(),
+				(int) (cx - (getNickName().length() * Constants.DEFAULT_NICK_DELTA)),
+				cy - Constants.DEFAULT_NICK_OFFSET
+		);
 	}
 
 	void drawPlayer (GraphicsPainter graphicsPainter)
@@ -335,7 +363,11 @@ class Player implements Serializable
 		ImageIcon pfp = getPlayerSplash(graphicsPainter.getStuff());
 		graphicsPainter.getG().drawImage(
 				getScaledAndRotatedPlayerSplash(pfp),
-				cx - 40, cy - 40, 80, 80, null
+				cx - Constants.PLAYER_OFFSET,
+				cy - Constants.PLAYER_OFFSET,
+				Constants.PLAYER_SIZE,
+				Constants.PLAYER_SIZE,
+				null
 		);
 
 		drawNicknameAbovePlayersHead(graphicsPainter, cx, cy);
@@ -409,10 +441,10 @@ class Player implements Serializable
 				&& otherPlayerID.equals(getPlayerID());
 	}
 
-	boolean isHidden (ArrayList<Chest> chests)
+	boolean isHidden (ArrayList<ChestProp> chestProps)
 	{
-		for (Chest chest : chests)
-			if (matchPlayersUUID(chest.getPlayerUUID()))
+		for (ChestProp chestProp : chestProps)
+			if (matchPlayersUUID(chestProp.getPlayerUUID()))
 				return true;
 		return false;
 	}

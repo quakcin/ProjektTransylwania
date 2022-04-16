@@ -44,7 +44,7 @@ public class PlayerLocation implements Serializable
 
 	void push (double speed, Game clientGame)
 	{
-		if (Chest.isPlayerHidden(clientGame.getChests(), player.getPlayerID()))
+		if (ChestProp.isPlayerHidden(clientGame.getChests(), player.getPlayerID()))
 			return;
 
 		pushAttempts = 0;
@@ -73,17 +73,61 @@ public class PlayerLocation implements Serializable
 		return false;
 	}
 
+
+	/*
+	private boolean isCollidingWithHorizontalDoors (double vx, double vy, Game clientGame)
+	{
+		final double collider = 15;
+		// door collision detection:
+		for (int y = 0; y < Constants.MAP_SIZE + 1; y++)
+			for (int x = 0; x < Constants.MAP_SIZE; x++) {
+				int index = y * (Constants.MAP_SIZE) + x;
+				int dx = x * 810 - 450 + 90 + 810;
+				int dy = y * 810;
+				double doorDist = Math.sqrt(Math.pow(vx - dx, 2) + Math.pow(vy - dy, 2));
+
+				if (doorDist < 90 && clientGame.getHorizontalDoors()[index]) {
+					return true;
+				}
+			}
+		return false;
+
+	}
+
+	private boolean isCollidingWithVerticalDoors (double vx, double vy, Game clientGame)
+	{
+		final double collider = 15;
+		for (int y = 0; y < Constants.MAP_SIZE; y++)
+			for (int x = 0; x < Constants.MAP_SIZE + 1; x++) {
+				int index = x * (Constants.MAP_SIZE) + y;
+				int dx = x * 810;
+				int dy = y * 810 - 450 + 90 + 810;
+				double doorDist = Math.sqrt(Math.pow(vx - dx, 2) + Math.pow(vy - dy, 2));
+
+				if (doorDist < 90 && clientGame.getVerticalDoors()[index]) {
+					return true;
+				}
+			}
+		return false;
+	}
+	*/
+
+
 	private boolean isCollidingWithHorizontalDoors (double vx, double vy, Game clientGame)
 	{
 		for (int y = 0; y < Constants.MAP_SIZE + 1; y++)
 			for (int x = 0; x < Constants.MAP_SIZE; x++)
 			{
 				int index = y * (Constants.MAP_SIZE) + x;
-				int dx = x * 810 - 450 + 90 + 810;
-				int dy = y * 810;
+				int dx = x * Constants.DEFAULT_ROOM_SIZE
+						- Constants.DEFAULT_HALF_ROOM_SIZE
+						+ Constants.DEFAULT_GRID_SIZE
+						+ Constants.DEFAULT_ROOM_SIZE
+						;
+				int dy = y * Constants.DEFAULT_ROOM_SIZE;
 				double doorDist = Math.sqrt(Math.pow(vx - dx, 2) + Math.pow(vy - dy, 2));
 
-				if (doorDist < 90 && clientGame.getHorizontalDoors()[index])
+				if (doorDist < Constants.DEFAULT_GRID_SIZE && clientGame.getHorizontalDoors()[index])
 					return true;
 			}
 		return false;
@@ -95,11 +139,15 @@ public class PlayerLocation implements Serializable
 			for (int x = 0; x < Constants.MAP_SIZE + 1; x++)
 			{
 				int index = x * (Constants.MAP_SIZE) + y;
-				int dx = x * 810;
-				int dy = y * 810 - 450 + 90 + 810;
+				int dx = x * Constants.DEFAULT_ROOM_SIZE;
+				int dy = y * Constants.DEFAULT_ROOM_SIZE
+						- Constants.DEFAULT_HALF_ROOM_SIZE
+						+ Constants.DEFAULT_GRID_SIZE
+						+ Constants.DEFAULT_ROOM_SIZE
+						;
 				double doorDist = Math.sqrt(Math.pow(vx - dx, 2) + Math.pow(vy - dy, 2));
 
-				if (doorDist < 90 && clientGame.getVerticalDoors()[index])
+				if (doorDist < Constants.DEFAULT_GRID_SIZE && clientGame.getVerticalDoors()[index])
 					return true;
 			}
 		return false;
@@ -108,12 +156,18 @@ public class PlayerLocation implements Serializable
 	private boolean isCollidingWithAnotherPlayer (double vx, double vy, Game clientGame)
 	{
 		for (Player p : clientGame.getPlayers())
-			if (p.getPlayerID() != player.getPlayerID() && !p.getPlayerType().equals(PlayerType.GHOST))
-				if (!Chest.isPlayerHidden(clientGame.getChests(), p.getPlayerID()))
-					if (Math.sqrt(Math.pow(vx - p.getX(), 2) + Math.pow(vy - p.getY(), 2)) < 50)
-						return true;
+			if (isCollidingWithSpecificPlayer(vx, vy, clientGame, p))
+				return true;
 
 		return false;
+	}
+
+	private boolean isCollidingWithSpecificPlayer (double vx, double vy, Game clientGame, Player p)
+	{
+		return (p.getPlayerID() != player.getPlayerID() && !p.getPlayerType().equals(PlayerType.GHOST))
+				&& (!ChestProp.isPlayerHidden(clientGame.getChests(), p.getPlayerID()))
+				&& (Math.sqrt(Math.pow(vx - p.getX(), 2) + Math.pow(vy - p.getY(), 2)) < Constants.PLAYER_COLLIDER)
+				;
 	}
 
 
@@ -129,14 +183,14 @@ public class PlayerLocation implements Serializable
 	private void performRecursivePushAttempt (Game clientGame)
 	{
 		rotatePlayerOtherWayAround();
-		if (pushAttempts++ < 10)
-			recursivePush(10, clientGame);
+		if (pushAttempts++ < Constants.PUSH_ATTEMPTS)
+			recursivePush(Constants.PUSH_ATTEMPTS_SPEED, clientGame);
 		rotatePlayerOtherWayAround();
 	}
 
 	private void rotatePlayerOtherWayAround ()
 	{
-		ang += 180 * (3.1415 / 180);
+		ang += Constants.DEG180;
 	}
 
 	private void recursivePush (double speed, Game clientGame)
@@ -155,7 +209,7 @@ public class PlayerLocation implements Serializable
 	}
 
 	void turn (double delta) {
-		ang += delta * (3.1415 / 180);
+		ang += Math.toRadians(delta);
 	}
 
 	void copyLocation(Player otherPlayer) {
@@ -192,7 +246,7 @@ public class PlayerLocation implements Serializable
 
 	private double distanceToNearestPlayer (ArrayList<Player> allPlayers)
 	{
-		double nearest = 0xFFFFFF;
+		double nearest = Constants.FAR_PLANE;
 
 		for (Player p : allPlayers)
 			if (p.getPlayerID() != player.getPlayerID())
@@ -209,12 +263,20 @@ public class PlayerLocation implements Serializable
 	{
 		do
 			teleportPlayerToRandomSpawnLocation();
-		while (distanceToNearestPlayer(allPlayers) < 90);
+		while (distanceToNearestPlayer(allPlayers) < Constants.DEFAULT_GRID_SIZE);
 	}
 
 	private void teleportPlayerToRandomSpawnLocation ()
 	{
-		serverTeleport(2 * 810 + ((Math.random() * 6) + 1) * 100, 2 * 810 + ((Math.random() * 6) + 1) * 100);
+		serverTeleport(
+				2 * Constants.DEFAULT_ROOM_SIZE
+							+ ((Math.random() * 6) + 1)
+							* 100,
+
+				2 * Constants.DEFAULT_ROOM_SIZE
+							+ ((Math.random() * 6) + 1)
+							* 100
+		);
 	}
 
 }

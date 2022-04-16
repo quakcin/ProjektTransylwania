@@ -61,7 +61,7 @@ public class ClientConnectionHandler extends Thread
 		try
 		{
 			updateConnection();
-			Thread.sleep(1000L / 25L);
+			Thread.sleep(Constants.ODD_TICK_LONG_DELAY);
 		}
 		catch (Exception e)
 		{
@@ -171,7 +171,7 @@ public class ClientConnectionHandler extends Thread
 	{
 		try
 		{
-			Thread.sleep(2000L);
+			Thread.sleep(Constants.CLIENT_THREAD_DELAY);
 		}
 		catch (Exception e)
 		{

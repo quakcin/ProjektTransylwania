@@ -7,29 +7,23 @@ import java.awt.event.KeyListener;
 
 public class Client extends JFrame implements KeyListener
 {
-	private boolean forceHalt;
+
 	private Game clientGame;
 	private Boolean[] keyboardState;
-
 	private Stuff stuff;
-
-	private double privateLight;
-	private double globalLight;
-	private int roleCallTime;
-
-	private String nickName;
-	private String ipAddress;
-	private int port;
+	private ClientCredits clientCredits;
+	private ClientFlags clientFlags;
 
 	Client (String nick, String ip, int port) throws Exception
 	{
 		super();
 
-		this.nickName = nick;
-		this.ipAddress = ip;
-		this.port = port;
+		this.clientCredits =
+				new ClientCredits(nick, ip, port);
 
-		setFlagsToDefault();
+		this.clientFlags =
+				new ClientFlags();
+
 		initializeKeyboardStateArray();
 		setWindowFrameOptions();
 		createHandlers();
@@ -54,12 +48,6 @@ public class Client extends JFrame implements KeyListener
 		setVisible(true);
 	}
 
-	private void setFlagsToDefault ()
-	{
-		this.forceHalt = false;
-		privateLight = 0.5d;
-		roleCallTime = 0;
-	}
 
 	private void initializeKeyboardStateArray()
 	{
@@ -94,11 +82,11 @@ public class Client extends JFrame implements KeyListener
 	}
 
 	boolean isForceHalt() {
-		return forceHalt;
+		return clientFlags.isForceHalt();
 	}
 
 	void setForceHalt(boolean forceHalt) {
-		this.forceHalt = forceHalt;
+		clientFlags.setForceHalt(forceHalt);
 	}
 
 	public Game getClientGame() {
@@ -118,27 +106,27 @@ public class Client extends JFrame implements KeyListener
 	}
 
 	double getPrivateLight() {
-		return privateLight;
+		return clientFlags.getPrivateLight();
 	}
 
 	void setPrivateLight(double privateLight) {
-		this.privateLight = privateLight;
+		clientFlags.setPrivateLight(privateLight);
 	}
 
 	double getGlobalLight() {
-		return globalLight;
+		return clientFlags.getGlobalLight();
 	}
 
 	void setGlobalLight(double globalLight) {
-		this.globalLight = globalLight;
+		clientFlags.setGlobalLight(globalLight);
 	}
 
 	int getRoleCallTime() {
-		return roleCallTime;
+		return clientFlags.getRoleCallTime();
 	}
 
 	void setRoleCallTime(int roleCallTime) {
-		this.roleCallTime = roleCallTime;
+		clientFlags.setRoleCallTime(roleCallTime);
 	}
 
 	Boolean[] getKeyboardState() {
@@ -146,15 +134,18 @@ public class Client extends JFrame implements KeyListener
 	}
 
 
-	String getNickName() {
-		return nickName;
+	String getNickName()
+	{
+		return clientCredits.getNickName();
 	}
 
-	String getIpAddress() {
-		return ipAddress;
+	String getIpAddress()
+	{
+		return clientCredits.getIpAddress();
 	}
 
-	int getPort() {
-		return port;
+	int getPort()
+	{
+		return clientCredits.getPort();
 	}
 }

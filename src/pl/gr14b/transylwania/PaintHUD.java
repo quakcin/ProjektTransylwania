@@ -19,8 +19,8 @@ class PaintHUD extends GraphicsPainter
 	{
 		client.setPrivateLight(
 				client.getPrivateLight() + (client.getGlobalLight() > client.getPrivateLight()
-						? +0.0015d
-						: -0.0015d
+						? + Constants.LIGHTNESS_DELTA
+						: - Constants.LIGHTNESS_DELTA
 				)
 		);
 	}
@@ -48,26 +48,45 @@ class PaintHUD extends GraphicsPainter
 
 	private void paintLobbyOverlay()
 	{
-		g.setFont(stuff.getFont().deriveFont(35f));
+		g.setFont(
+				stuff.getFont().deriveFont(Constants.SCREEN_DEFAULT_FONT_SIZE)
+		);
 		g.setColor(Color.WHITE);
-		g.drawString("OCZEKIWANIE NA", 50, 80);
-		g.drawString("GRACZY (" + clientGame.getPlayers().size() + " / 8)", 50, 130);
+		g.drawString("OCZEKIWANIE NA", Constants.SCREEN_PADDING, Constants.SCREEN_PADDING + 30);
+		g.drawString(
+				"GRACZY (" + clientGame.getPlayers().size() + " / 8)",
+				Constants.SCREEN_PADDING, Constants.SCREEN_PLAYERS_COUNT_Y_OFFSET
+		);
 
 		if (clientGame.getWaitingTime() != 40)
-			g.drawString("" + clientGame.getWaitingTime() + "s", 50, height - 50);
+			g.drawString(
+					"" + clientGame.getWaitingTime() + "s",
+					Constants.SCREEN_PADDING,
+					height - Constants.SCREEN_PADDING
+			);
 	}
 
 	private void paintKillingTimer()
 	{
-		g.setFont(stuff.getFont().deriveFont(35f));
+		g.setFont(
+				stuff.getFont().deriveFont(Constants.SCREEN_DEFAULT_FONT_SIZE)
+		);
 		g.setColor(Color.WHITE);
 
-		int minutes = Math.floorDiv(clientGame.getGameTime(), 60);
-		int seconds = clientGame.getGameTime() - minutes * 60;
+		int minutes = Math.floorDiv(clientGame.getGameTime(), Constants.MINUTE_IN_SECONDS);
+		int seconds = clientGame.getGameTime() - minutes * Constants.MINUTE_IN_SECONDS;
 		if (minutes != 0)
-			g.drawString("" + minutes + "m " + seconds + "s", 50, height - 50);
+			g.drawString(
+					+ minutes + "m " + seconds + "s",
+					Constants.SCREEN_PADDING,
+					height - Constants.SCREEN_PADDING
+			);
 		else
-			g.drawString("" + seconds + "s", 50, height - 50);
+			g.drawString(
+					"" + seconds + "s",
+					Constants.SCREEN_PADDING,
+					height - Constants.SCREEN_PADDING
+			);
 	}
 
 	private void paintVampireHints()
@@ -76,7 +95,7 @@ class PaintHUD extends GraphicsPainter
 		{
 			vampDefaultArrow(g, offX, offY);
 			for (Player p : clientGame.getPlayers())
-				if (p.getAfkPenalty() > 15)
+				if (p.getAfkPenalty() > Constants.AFK_PENALTY_TIME)
 					pointArrow(g, offX, offY, p.getX(), p.getY());
 		}
 	}
@@ -100,8 +119,19 @@ class PaintHUD extends GraphicsPainter
 	{
 		client.setRoleCallTime(client.getRoleCallTime() - 1);
 
-		if (client.getRoleCallTime() > 0 && !clientGame.getPlayer().getPlayerType().equals(PlayerType.GHOST))
-			g.drawImage(stuff.getPType().get(clientGame.getPlayer().getPlayerType().equals(PlayerType.SURVIVOR) ? 1 : 0), 0, 0, width, height, null);
+		if (canPaintIntroOverlay())
+			g.drawImage(
+					stuff.getPType().get(
+							clientGame.getPlayer().getPlayerType().equals(PlayerType.SURVIVOR) ? 1 : 0
+					),
+					0, 0, width, height, null
+			);
+	}
+
+	private boolean canPaintIntroOverlay ()
+	{
+		return client.getRoleCallTime() > 0
+				&& !clientGame.getPlayer().getPlayerType().equals(PlayerType.GHOST);
 	}
 
 	private void paintStageSpecificOverlay()
@@ -121,11 +151,14 @@ class PaintHUD extends GraphicsPainter
 
 	private void paintHealth()
 	{
-		// draw health
 		if (clientGame.getPlayer().getPlayerType().equals(PlayerType.SURVIVOR))
 			g.drawImage(
-					stuff.getHealth().get(clientGame.getPlayer().getHealth()),
-					width - 30 - 90,50, 90, 108,null
+					stuff.getHealth().get(
+							clientGame.getPlayer().getHealth()
+					),
+				width - Constants.SCREEN_HP_X_PADDING,
+					Constants.SCREEN_PADDING,
+				90, 108,null
 			);
 	}
 
@@ -137,22 +170,48 @@ class PaintHUD extends GraphicsPainter
 		paintHealth();
 	}
 
+	private BufferedImage getArrowImage ()
+	{
+		return new BufferedImage(
+				stuff.getArrow().getWidth(),
+				stuff.getArrow().getHeight(),
+				BufferedImage.TYPE_INT_ARGB
+		);
+	}
+
+	private Graphics2D rotateArrow (double ang, BufferedImage arrow)
+	{
+		Graphics2D arrGfx = arrow.createGraphics();
+		arrGfx.rotate(
+				ang + Constants.DEG90,
+				arrow.getWidth() >> 1,
+				arrow.getHeight() >> 1
+		);
+		arrGfx.drawImage(stuff.getArrow(), 0, 0, null);
+		return arrGfx;
+	}
+
 	private void pointArrow(Graphics g, int offX, int offY, double dx, double dy)
 	{
 		// Draw Arrow here:
 		Player player = clientGame.getPlayer();
-		if (player.getDist(dx, dy) < 500)
+		if (player.getDist(dx, dy) < Constants.PLAYER_ARROW_DELTA_Y)
 			return;
 
 		double ang = Math.atan2(player.getY() - dy, player.getX() - dx);
-		double ax = Math.cos(ang) * 115;
-		double ay = Math.sin(ang) * 115;
+		double ax = Math.cos(ang) * Constants.ARROW_ROTATION_OFFSET;
+		double ay = Math.sin(ang) * Constants.ARROW_ROTATION_OFFSET;
 		// Rotate Arrow
-		BufferedImage arrow = new BufferedImage(stuff.getArrow().getWidth(), stuff.getArrow().getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics2D arrGfx = arrow.createGraphics();
-		arrGfx.rotate(ang + (90 * (3.1415 / 180)), arrow.getWidth() >> 1, arrow.getHeight() >> 1);
-		arrGfx.drawImage(stuff.getArrow(), 0, 0, null);
-		g.drawImage(arrow, (int) ax - 20 + offX, (int) ay - 20 + offY, 40, 40, null);
+		BufferedImage arrow = getArrowImage();
+		Graphics2D arrGfx = rotateArrow(ang, arrow);
+		g.drawImage(
+				arrow,
+				(int) ax - Constants.DEFAULT_ROOM_PADDING + offX,
+				(int) ay - Constants.DEFAULT_ROOM_PADDING + offY,
+				Constants.ARROW_SIZE,
+				Constants.ARROW_SIZE,
+				null
+		);
 		arrGfx.dispose();
 	}
 

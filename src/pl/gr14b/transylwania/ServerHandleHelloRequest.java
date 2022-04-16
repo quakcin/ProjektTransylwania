@@ -10,7 +10,7 @@ class ServerHandleHelloRequest extends ServerHandleRequest
 
 	private boolean tooManyPlayers()
 	{
-		return serverGame.getPlayers().size() >= 8;
+		return serverGame.getPlayers().size() >= Constants.MAX_PLAYERS;
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class PlayerFlags implements Serializable
 
 	void nextPacket ()
 	{
-		if (++this.nextPacket > 14)
+		if (++this.nextPacket > Constants.PACKET_COUNT)
 			this.nextPacket = 1;
 	}
 

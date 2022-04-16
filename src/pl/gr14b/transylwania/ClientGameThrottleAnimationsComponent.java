@@ -13,7 +13,8 @@ class ClientGameThrottleAnimationsComponent extends ClientGameComponent
 
 	private boolean isCloseEnough(Player p)
 	{
-		return p.getDist(clientGame.getPlayer().getX(), clientGame.getPlayer().getY()) < 800;
+		return p.getDist(clientGame.getPlayer().getX(), clientGame.getPlayer().getY())
+				< Constants.CLIENT_ANIMATION_THROTTLE_LIMITER;
 	}
 
 	@Override
@@ -26,7 +27,8 @@ class ClientGameThrottleAnimationsComponent extends ClientGameComponent
 
 	private boolean isPlayerOnTheirSoundTick(Player p)
 	{
-		return (tick + clientGame.getPlayers().indexOf(p) * 3) % 15L == 0;
+		return (tick + clientGame.getPlayers().indexOf(p) * Constants.RANDOM_TICK_OFFSET_DELTA)
+					% Constants.RANDOM_TICK_OFFSET_LIMIT == 0;
 	}
 
 	private void attemptPlayerPush(Player p)
@@ -34,7 +36,7 @@ class ClientGameThrottleAnimationsComponent extends ClientGameComponent
 		if (isPlayerOnTheirSoundTick(p))
 			p.playStepSound();
 
-		p.push(16.3, clientGame);
+		p.push(Constants.PLAYER_DEFAULT_FORWARD_MOTION_SPEED, clientGame);
 	}
 
 }

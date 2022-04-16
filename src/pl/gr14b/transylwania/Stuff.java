@@ -52,7 +52,7 @@ class Stuff
 	static ArrayList<ImageIcon> loadImageIconsFromFormattedPath (String path)
 	{
 		ArrayList<ImageIcon> icons = new ArrayList<>();
-		for (int i = 0; i < 0xFF; i++)
+		for (int i = 0; i < Constants.MAX_TEXTURE_COUNT; i++)
 		{
 			File fd = new File(String.format(path, i));
 			if (!(fd.exists() && !fd.isDirectory()))
@@ -65,7 +65,7 @@ class Stuff
 	static ArrayList<Image> loadImagesFromFormattedPath (String path) throws Exception
 	{
 		ArrayList<Image> icons = new ArrayList<>();
-		for (int i = 0; i < 0xFF; i++)
+		for (int i = 0; i < Constants.MAX_TEXTURE_COUNT; i++)
 		{
 			File fd = new File(String.format(path, i));
 			if (!(fd.exists() && !fd.isDirectory()))
