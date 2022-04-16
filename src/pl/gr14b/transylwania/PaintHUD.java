@@ -158,7 +158,8 @@ class PaintHUD extends GraphicsPainter
 					),
 				width - Constants.SCREEN_HP_X_PADDING,
 					Constants.SCREEN_PADDING,
-				90, 108,null
+				90, 108,
+					null
 			);
 	}
 

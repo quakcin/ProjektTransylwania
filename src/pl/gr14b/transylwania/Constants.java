@@ -124,7 +124,7 @@ class Constants
 
 	static final int SCREEN_PLAYERS_COUNT_Y_OFFSET = 130;
 
-	static final int SCREEN_HP_X_PADDING = 30 - 90;
+	static final int SCREEN_HP_X_PADDING = 30 + 90;
 
 	static final int MINUTE_IN_SECONDS = 60;
 
