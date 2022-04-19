@@ -15,8 +15,8 @@ class MenuLocator
 	private int getPortFromTokens (String[] tokens)
 	{
 		return tokens.length != Constants.LOCATOR_PORT_TOKEN_COUNT
-				? Integer.parseInt(tokens[1])
-				: Constants.DEFAULT_PORT
+				? Constants.DEFAULT_PORT
+				: Integer.parseInt(tokens[1])
 				;
 	}
 

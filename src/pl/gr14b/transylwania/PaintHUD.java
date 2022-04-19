@@ -145,7 +145,6 @@ class PaintHUD extends GraphicsPainter
 		if (clientGame.getGameStatus().equals(GameStatus.SUMMARY))
 			paintSummaryOverlay();
 
-		//if (clientGame.getGameStatus().equals(GameStatus.INTRO)) //?
 		paintIntroOverlay();
 	}
 
